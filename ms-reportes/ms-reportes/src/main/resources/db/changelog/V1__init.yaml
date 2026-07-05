@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: codex
+      changes:
+        - createTable:
+            tableName: reportes
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: reserva_id
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: pago_id
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tipo_reporte
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: fecha_generacion
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: descripcion
+                  type: VARCHAR(200)
+              - column:
+                  name: total_reserva
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: monto_pagado
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reserva_activa
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: pago_confirmado
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false

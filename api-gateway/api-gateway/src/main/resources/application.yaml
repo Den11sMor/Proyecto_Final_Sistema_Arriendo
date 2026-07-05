@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: false
+          routes:
+            - id: ms-clientes-route
+              uri: lb://ms-clientes
+              predicates:
+                - Path=/ms-clientes/**
+              filters:
+                - StripPrefix=1
+            - id: ms-vehiculos-route
+              uri: lb://ms-vehiculos
+              predicates:
+                - Path=/ms-vehiculos/**
+              filters:
+                - StripPrefix=1
+            - id: ms-reservas-route
+              uri: lb://ms-reservas
+              predicates:
+                - Path=/ms-reservas/**
+              filters:
+                - StripPrefix=1
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true

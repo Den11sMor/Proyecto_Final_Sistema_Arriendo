@@ -1,0 +1,24 @@
+# Maven
+target/
+*.jar
+*.war
+*.ear
+
+# IntelliJ
+.idea/
+*.iml
+
+# Eclipse / STS
+.classpath
+.project
+.settings/
+
+# Java
+*.class
+
+# Logs
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

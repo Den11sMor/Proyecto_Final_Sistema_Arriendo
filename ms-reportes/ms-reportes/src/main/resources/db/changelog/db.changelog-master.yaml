@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/V1__init.yaml
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/V2__datos.yaml
+      relativeToChangelogFile: false

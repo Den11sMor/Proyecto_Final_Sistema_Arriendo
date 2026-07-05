@@ -1,0 +1,98 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: codex
+      changes:
+        - insert:
+            tableName: reportes
+            columns:
+              - column:
+                  name: reserva_id
+                  valueNumeric: 1
+              - column:
+                  name: pago_id
+                  valueNumeric: 1
+              - column:
+                  name: tipo_reporte
+                  value: "RESUMEN_PAGO"
+              - column:
+                  name: fecha_generacion
+                  valueDate: "2025-05-01"
+              - column:
+                  name: descripcion
+                  value: "Reporte inicial de reserva pagada"
+              - column:
+                  name: total_reserva
+                  valueNumeric: 75000.00
+              - column:
+                  name: monto_pagado
+                  valueNumeric: 75000.00
+              - column:
+                  name: reserva_activa
+                  valueBoolean: true
+              - column:
+                  name: pago_confirmado
+                  valueBoolean: true
+        - insert:
+            tableName: reportes
+            columns:
+              - column:
+                  name: reserva_id
+                  valueNumeric: 2
+              - column:
+                  name: pago_id
+                  valueNumeric: 2
+              - column:
+                  name: tipo_reporte
+                  value: "RESUMEN_RESERVA"
+              - column:
+                  name: fecha_generacion
+                  valueDate: "2025-05-03"
+              - column:
+                  name: descripcion
+                  value: "Reporte consolidado de reserva activa"
+              - column:
+                  name: total_reserva
+                  valueNumeric: 120000.00
+              - column:
+                  name: monto_pagado
+                  valueNumeric: 120000.00
+              - column:
+                  name: reserva_activa
+                  valueBoolean: true
+              - column:
+                  name: pago_confirmado
+                  valueBoolean: true
+        - insert:
+            tableName: reportes
+            columns:
+              - column:
+                  name: reserva_id
+                  valueNumeric: 3
+              - column:
+                  name: pago_id
+                  valueNumeric: 3
+              - column:
+                  name: tipo_reporte
+                  value: "CONTROL_PAGO"
+              - column:
+                  name: fecha_generacion
+                  valueDate: "2025-05-05"
+              - column:
+                  name: descripcion
+                  value: "Reporte de control de pago confirmado"
+              - column:
+                  name: total_reserva
+                  valueNumeric: 55000.00
+              - column:
+                  name: monto_pagado
+                  valueNumeric: 55000.00
+              - column:
+                  name: reserva_activa
+                  valueBoolean: false
+              - column:
+                  name: pago_confirmado
+                  valueBoolean: true
+      rollback:
+        - delete:
+            tableName: reportes
