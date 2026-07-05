@@ -30,10 +30,36 @@ spring:
                 - Path=/ms-reservas/**
               filters:
                 - StripPrefix=1
+            - id: ms-pagos-route
+              uri: lb://ms-pagos
+              predicates:
+                - Path=/ms-pagos/**
+              filters:
+                - StripPrefix=1
+            - id: ms-reportes-route
+              uri: lb://ms-reportes
+              predicates:
+                - Path=/ms-reportes/**
+              filters:
+                - StripPrefix=1
+            - id: ms-sucursales-route
+              uri: lb://ms-sucursales
+              predicates:
+                - Path=/ms-sucursales/**
+              filters:
+                - StripPrefix=1
+            - id: ms-empleados-route
+              uri: lb://ms-empleados
+              predicates:
+                - Path=/ms-empleados/**
+              filters:
+                - StripPrefix=1
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
   instance:
     prefer-ip-address: true
