@@ -5,11 +5,17 @@ import com.duoc.ms_clientes.dto.ClienteRequestDTO;
 import com.duoc.ms_clientes.model.Cliente;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper encargado de convertir clientes entre entidad y DTO.
+ */
 @Component
 public class ClienteMapper {
 
-    public ClienteDTO toDTO(Cliente cliente){
-        if(cliente == null) return  null;
+    public ClienteDTO toDTO(Cliente cliente) {
+        if (cliente == null) {
+            return null;
+        }
+
         return new ClienteDTO(
                 cliente.getId(),
                 cliente.getRut(),
@@ -22,9 +28,9 @@ public class ClienteMapper {
         );
     }
 
-    public Cliente toEntity(ClienteRequestDTO request){
-        if (request == null){
-            return  null;
+    public Cliente toEntity(ClienteRequestDTO request) {
+        if (request == null) {
+            return null;
         }
 
         Cliente cliente = new Cliente();
@@ -38,7 +44,4 @@ public class ClienteMapper {
 
         return cliente;
     }
-
-
-//
 }

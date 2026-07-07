@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+/**
+ * Convierte datos entre la entidad Reporte y sus DTO
+ */
 @Component
 public class ReporteMapper {
 

@@ -6,25 +6,23 @@ import com.duoc.mssucursales.exception.ResourceNotFoundException;
 import com.duoc.mssucursales.mapper.RegionMapper;
 import com.duoc.mssucursales.model.Region;
 import com.duoc.mssucursales.repository.RegionRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Contiene la logica de negocio para regiones
+ */
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class RegionService {
 
-    private static final Logger log = LoggerFactory.getLogger(RegionService.class);
-
     private final RegionRepository regionRepository;
     private final RegionMapper regionMapper;
-
-    public RegionService(RegionRepository regionRepository, RegionMapper regionMapper) {
-        this.regionRepository = regionRepository;
-        this.regionMapper = regionMapper;
-    }
 
     public List<RegionDTO> findAll() {
         try {
@@ -43,25 +41,25 @@ public class RegionService {
 
     public RegionDTO findById(Integer id) {
         try {
-            log.info("Buscando región con id: {}", id);
+            log.info("Buscando region con id: {}", id);
 
             Region region = regionRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Región no encontrada con id: " + id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Region no encontrada con id: " + id));
 
             return regionMapper.toDTO(region);
 
         } catch (ResourceNotFoundException e) {
-            log.error("Región no encontrada con id: {}", id);
+            log.error("Region no encontrada con id: {}", id);
             throw e;
         } catch (Exception e) {
-            log.error("Error al buscar región con id: {}", id, e);
+            log.error("Error al buscar region con id: {}", id, e);
             throw e;
         }
     }
 
     public RegionDTO save(RegionRequestDTO requestDTO) {
         try {
-            log.info("Guardando nueva región");
+            log.info("Guardando nueva region");
 
             Region region = regionMapper.toEntity(requestDTO);
             Region regionGuardada = regionRepository.save(region);
@@ -69,17 +67,17 @@ public class RegionService {
             return regionMapper.toDTO(regionGuardada);
 
         } catch (Exception e) {
-            log.error("Error al guardar región", e);
+            log.error("Error al guardar region", e);
             throw e;
         }
     }
 
     public RegionDTO update(Integer id, RegionRequestDTO requestDTO) {
         try {
-            log.info("Actualizando región con id: {}", id);
+            log.info("Actualizando region con id: {}", id);
 
             Region region = regionRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Región no encontrada con id: " + id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Region no encontrada con id: " + id));
 
             regionMapper.updateEntity(region, requestDTO);
 
@@ -88,30 +86,29 @@ public class RegionService {
             return regionMapper.toDTO(regionActualizada);
 
         } catch (ResourceNotFoundException e) {
-            log.error("Región no encontrada con id: {}", id);
+            log.error("Region no encontrada con id: {}", id);
             throw e;
         } catch (Exception e) {
-            log.error("Error al actualizar región con id: {}", id, e);
+            log.error("Error al actualizar region con id: {}", id, e);
             throw e;
         }
     }
 
     public void delete(Integer id) {
         try {
-            log.info("Eliminando región con id: {}", id);
+            log.info("Eliminando region con id: {}", id);
 
             Region region = regionRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Región no encontrada con id: " + id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Region no encontrada con id: " + id));
 
             regionRepository.delete(region);
 
         } catch (ResourceNotFoundException e) {
-            log.error("Región no encontrada con id: {}", id);
+            log.error("Region no encontrada con id: {}", id);
             throw e;
         } catch (Exception e) {
-            log.error("Error al eliminar región con id: {}", id, e);
+            log.error("Error al eliminar region con id: {}", id, e);
             throw e;
         }
     }
-
 }

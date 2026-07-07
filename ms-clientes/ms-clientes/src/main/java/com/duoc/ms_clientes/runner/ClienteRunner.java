@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+/**
+ * Carga datos iniciales de clientes cuando la tabla esta vacia.
+ */
 @Component
 @RequiredArgsConstructor
 @Order(1)
@@ -19,7 +22,6 @@ public class ClienteRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (clienteRepository.count() == 0) {
-
             Cliente cliente1 = new Cliente();
             cliente1.setRut("12345678-9");
             cliente1.setNombre("Juan");

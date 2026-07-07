@@ -6,6 +6,7 @@ import com.duoc.msvehiculos.exception.ResourceNotFoundException;
 import com.duoc.msvehiculos.model.Categoria;
 import com.duoc.msvehiculos.repository.CategoriaRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,15 +18,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+/**
+ * Pruebas unitarias del servicio de categorias.
+ */
 @ExtendWith(MockitoExtension.class)
+@DisplayName("CategoriaService")
 class CategoriaServiceTest {
 
     @Mock
@@ -60,6 +61,7 @@ class CategoriaServiceTest {
     }
 
     @Test
+    @DisplayName("Debe listar categorias")
     void testFindAll() {
         when(categoriaRepository.findAll()).thenReturn(List.of(categoria));
 
@@ -72,6 +74,7 @@ class CategoriaServiceTest {
     }
 
     @Test
+    @DisplayName("Debe buscar categoria por id")
     void testFindById() {
         when(categoriaRepository.findById(1)).thenReturn(Optional.of(categoria));
 
@@ -84,6 +87,7 @@ class CategoriaServiceTest {
     }
 
     @Test
+    @DisplayName("Debe lanzar error cuando categoria no existe")
     void testFindByIdNoEncontrado() {
         when(categoriaRepository.findById(99)).thenReturn(Optional.empty());
 
@@ -92,6 +96,7 @@ class CategoriaServiceTest {
     }
 
     @Test
+    @DisplayName("Debe guardar categoria")
     void testSave() {
         when(categoriaRepository.save(any(Categoria.class))).thenReturn(categoria);
 
@@ -103,6 +108,7 @@ class CategoriaServiceTest {
     }
 
     @Test
+    @DisplayName("Debe actualizar categoria")
     void testUpdate() {
         when(categoriaRepository.findById(1)).thenReturn(Optional.of(categoria));
         when(categoriaRepository.save(any(Categoria.class))).thenReturn(categoria);
@@ -116,6 +122,7 @@ class CategoriaServiceTest {
     }
 
     @Test
+    @DisplayName("Debe eliminar categoria")
     void testDelete() {
         when(categoriaRepository.findById(1)).thenReturn(Optional.of(categoria));
 

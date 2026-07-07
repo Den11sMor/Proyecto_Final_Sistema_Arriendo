@@ -9,6 +9,7 @@ import com.duoc.ms_clientes.model.Direccion;
 import com.duoc.ms_clientes.repository.ClienteRepository;
 import com.duoc.ms_clientes.repository.DireccionRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -71,7 +72,8 @@ class DireccionServiceTest {
     }
 
     @Test
-    void testFindAll() {
+    @DisplayName("Debe retornar todas las direcciones mapeadas")
+    void findAll_ReturnsDirecciones() {
         when(direccionRepository.findAll()).thenReturn(List.of(direccion));
         when(direccionMapper.toDTO(direccion)).thenReturn(direccionDTO);
 
@@ -84,7 +86,8 @@ class DireccionServiceTest {
     }
 
     @Test
-    void testFindById() {
+    @DisplayName("Debe retornar una direccion cuando el ID existe")
+    void findById_WhenExists_ReturnsDireccion() {
         when(direccionRepository.findById(1)).thenReturn(Optional.of(direccion));
         when(direccionMapper.toDTO(direccion)).thenReturn(direccionDTO);
 
@@ -96,7 +99,8 @@ class DireccionServiceTest {
     }
 
     @Test
-    void testFindByIdNoEncontrado() {
+    @DisplayName("Debe lanzar excepcion cuando la direccion no existe")
+    void findById_WhenNotExists_ThrowsResourceNotFoundException() {
         when(direccionRepository.findById(99)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> direccionService.findById(99));
@@ -104,7 +108,8 @@ class DireccionServiceTest {
     }
 
     @Test
-    void testSave() {
+    @DisplayName("Debe guardar una direccion cuando el cliente existe")
+    void save_WhenClienteExists_ReturnsDireccionCreated() {
         when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente));
         when(direccionMapper.toEntity(requestDTO, cliente)).thenReturn(direccion);
         when(direccionRepository.save(direccion)).thenReturn(direccion);
@@ -119,7 +124,8 @@ class DireccionServiceTest {
     }
 
     @Test
-    void testUpdate() {
+    @DisplayName("Debe actualizar una direccion existente")
+    void update_WhenExists_ReturnsDireccionUpdated() {
         when(direccionRepository.findById(1)).thenReturn(Optional.of(direccion));
         when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente));
         when(direccionRepository.save(any(Direccion.class))).thenReturn(direccion);
@@ -135,7 +141,8 @@ class DireccionServiceTest {
     }
 
     @Test
-    void testDelete() {
+    @DisplayName("Debe eliminar una direccion existente")
+    void delete_WhenExists_DeletesDireccion() {
         when(direccionRepository.findById(1)).thenReturn(Optional.of(direccion));
 
         direccionService.delete(1);

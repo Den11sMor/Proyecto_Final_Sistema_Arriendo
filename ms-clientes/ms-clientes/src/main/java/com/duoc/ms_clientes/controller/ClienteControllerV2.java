@@ -4,6 +4,9 @@ import com.duoc.ms_clientes.assemblers.ClienteModelAssembler;
 import com.duoc.ms_clientes.dto.ClienteDTO;
 import com.duoc.ms_clientes.dto.ClienteRequestDTO;
 import com.duoc.ms_clientes.service.ClienteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -18,12 +21,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v2")
+@Tag(name = "Clientes V2", description = "Operaciones de clientes con respuestas HATEOAS")
 public class ClienteControllerV2 {
 
     private final ClienteService clienteService;
     private final ClienteModelAssembler clienteModelAssembler;
 
     @GetMapping("/clientes")
+    @Operation(summary = "Listar clientes con HATEOAS")
     public ResponseEntity<CollectionModel<EntityModel<ClienteDTO>>> findAll() {
         List<EntityModel<ClienteDTO>> clientes = clienteService.findAll()
                 .stream()
@@ -37,12 +42,16 @@ public class ClienteControllerV2 {
     }
 
     @GetMapping("/clientes/{id}")
-    public ResponseEntity<EntityModel<ClienteDTO>> findById(@PathVariable Integer id) {
+    @Operation(summary = "Buscar cliente por ID con HATEOAS")
+    public ResponseEntity<EntityModel<ClienteDTO>> findById(
+            @Parameter(description = "ID del cliente", example = "1", required = true)
+            @PathVariable Integer id) {
         ClienteDTO cliente = clienteService.findById(id);
         return ResponseEntity.ok(clienteModelAssembler.toModel(cliente));
     }
 
     @PostMapping("/clientes")
+    @Operation(summary = "Crear cliente con HATEOAS")
     public ResponseEntity<EntityModel<ClienteDTO>> save(@Valid @RequestBody ClienteRequestDTO request) {
         ClienteDTO clienteCreado = clienteService.save(request);
 
@@ -52,20 +61,29 @@ public class ClienteControllerV2 {
     }
 
     @PutMapping("/clientes/{id}")
-    public ResponseEntity<EntityModel<ClienteDTO>> update(@PathVariable Integer id,
-                                                          @Valid @RequestBody ClienteRequestDTO request) {
+    @Operation(summary = "Actualizar cliente con HATEOAS")
+    public ResponseEntity<EntityModel<ClienteDTO>> update(
+            @Parameter(description = "ID del cliente", example = "1", required = true)
+            @PathVariable Integer id,
+            @Valid @RequestBody ClienteRequestDTO request) {
         ClienteDTO clienteActualizado = clienteService.update(id, request);
         return ResponseEntity.ok(clienteModelAssembler.toModel(clienteActualizado));
     }
 
     @DeleteMapping("/clientes/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    @Operation(summary = "Eliminar cliente")
+    public ResponseEntity<Void> delete(
+            @Parameter(description = "ID del cliente", example = "1", required = true)
+            @PathVariable Integer id) {
         clienteService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/clientes/buscar-email")
-    public ResponseEntity<CollectionModel<EntityModel<ClienteDTO>>> buscarPorEmail(@RequestParam String texto) {
+    @Operation(summary = "Buscar clientes por email con HATEOAS")
+    public ResponseEntity<CollectionModel<EntityModel<ClienteDTO>>> buscarPorEmail(
+            @Parameter(description = "Texto para buscar dentro del email", example = "correo", required = true)
+            @RequestParam String texto) {
         List<EntityModel<ClienteDTO>> clientes = clienteService.buscarPorEmail(texto)
                 .stream()
                 .map(clienteModelAssembler::toModel)

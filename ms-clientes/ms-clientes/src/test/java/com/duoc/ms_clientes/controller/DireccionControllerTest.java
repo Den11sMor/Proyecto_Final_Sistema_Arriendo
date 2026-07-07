@@ -6,6 +6,7 @@ import com.duoc.ms_clientes.exception.GlobalExceptionHandler;
 import com.duoc.ms_clientes.service.DireccionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -56,7 +57,8 @@ class DireccionControllerTest {
     }
 
     @Test
-    void testFindAll() throws Exception {
+    @DisplayName("Debe listar direcciones desde la ruta V1")
+    void findAll_ReturnsOk() throws Exception {
         when(direccionService.findAll()).thenReturn(List.of(direccionDTO));
 
         mockMvc.perform(get("/api/v1/direcciones"))
@@ -67,7 +69,8 @@ class DireccionControllerTest {
     }
 
     @Test
-    void testFindById() throws Exception {
+    @DisplayName("Debe buscar una direccion por ID desde la ruta V1")
+    void findById_ReturnsOk() throws Exception {
         when(direccionService.findById(1)).thenReturn(direccionDTO);
 
         mockMvc.perform(get("/api/v1/direcciones/1"))
@@ -79,7 +82,8 @@ class DireccionControllerTest {
     }
 
     @Test
-    void testSave() throws Exception {
+    @DisplayName("Debe crear una direccion desde la ruta V1")
+    void save_ReturnsCreated() throws Exception {
         when(direccionService.save(any(DireccionRequestDTO.class))).thenReturn(direccionDTO);
 
         mockMvc.perform(post("/api/v1/direcciones")
@@ -92,7 +96,8 @@ class DireccionControllerTest {
     }
 
     @Test
-    void testUpdate() throws Exception {
+    @DisplayName("Debe actualizar una direccion desde la ruta V1")
+    void update_ReturnsOk() throws Exception {
         when(direccionService.update(eq(1), any(DireccionRequestDTO.class))).thenReturn(direccionDTO);
 
         mockMvc.perform(put("/api/v1/direcciones/1")
@@ -105,7 +110,8 @@ class DireccionControllerTest {
     }
 
     @Test
-    void testDelete() throws Exception {
+    @DisplayName("Debe eliminar una direccion desde la ruta V1")
+    void delete_ReturnsNoContent() throws Exception {
         doNothing().when(direccionService).delete(1);
 
         mockMvc.perform(delete("/api/v1/direcciones/1"))

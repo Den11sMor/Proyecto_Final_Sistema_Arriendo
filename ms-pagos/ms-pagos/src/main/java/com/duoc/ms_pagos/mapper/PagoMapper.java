@@ -5,6 +5,9 @@ import com.duoc.ms_pagos.dto.PagoRequestDTO;
 import com.duoc.ms_pagos.model.Pago;
 import org.springframework.stereotype.Component;
 
+/**
+ * Convierte entidades Pago hacia DTO y desde DTO hacia entidad.
+ */
 @Component
 public class PagoMapper {
 
@@ -42,7 +45,6 @@ public class PagoMapper {
         return pago;
     }
 
-    // agregado: actualizar campo por campo para usarlo en PUT
     public void updateEntity(Pago pago, PagoRequestDTO requestDTO) {
         pago.setReservaId(requestDTO.getReservaId());
         pago.setMetodoPago(requestDTO.getMetodoPago());

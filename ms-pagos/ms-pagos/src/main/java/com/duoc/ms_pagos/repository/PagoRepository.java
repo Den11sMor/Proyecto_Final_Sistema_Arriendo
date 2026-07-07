@@ -8,9 +8,18 @@ import org.springframework.data.repository.query.Param;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Repositorio JPA encargado de acceder a los datos de pagos.
+ */
 public interface PagoRepository extends JpaRepository<Pago, Integer> {
 
-    // agregado: query JPQL obligatoria para buscar pagos por rango de monto
+    /**
+     * Busca pagos dentro de un rango de monto.
+     *
+     * @param min monto minimo
+     * @param max monto maximo
+     * @return lista de pagos encontrados
+     */
     @Query("SELECT p FROM Pago p WHERE p.monto BETWEEN :min AND :max ORDER BY p.fechaPago DESC")
     List<Pago> buscarPagosPorRangoMonto(
             @Param("min") BigDecimal min,

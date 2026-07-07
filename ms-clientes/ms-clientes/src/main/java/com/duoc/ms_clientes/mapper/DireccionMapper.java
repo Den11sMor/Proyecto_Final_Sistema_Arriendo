@@ -6,11 +6,14 @@ import com.duoc.ms_clientes.model.Cliente;
 import com.duoc.ms_clientes.model.Direccion;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper encargado de convertir direcciones entre entidad y DTO.
+ */
 @Component
 public class DireccionMapper {
 
-    public Direccion toEntity(DireccionRequestDTO request, Cliente cliente){
-        if (request == null){
+    public Direccion toEntity(DireccionRequestDTO request, Cliente cliente) {
+        if (request == null) {
             return null;
         }
 
@@ -27,8 +30,8 @@ public class DireccionMapper {
         return direccion;
     }
 
-    public DireccionDTO toDTO(Direccion direccion){
-        if(direccion == null){
+    public DireccionDTO toDTO(Direccion direccion) {
+        if (direccion == null) {
             return null;
         }
 

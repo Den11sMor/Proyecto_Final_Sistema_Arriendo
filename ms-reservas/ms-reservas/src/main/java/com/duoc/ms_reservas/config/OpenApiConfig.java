@@ -11,8 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 /**
- * Configuración de Swagger / OpenAPI para el microservicio de Reservas.
- * Disponible en: http://localhost:8083/swagger-ui.html
+ * Configura la documentacion OpenAPI del microservicio de reservas
  */
 @Configuration
 public class OpenApiConfig {
@@ -21,25 +20,25 @@ public class OpenApiConfig {
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("MS Reservas - Sistema de Arriendo de Vehículos")
+                        .title("MS Reservas API")
                         .description("""
-                                API REST del microservicio de Reservas.
-                                
-                                Permite gestionar reservas de vehículos y sus estados.
-                                Se comunica con ms-clientes (puerto 8081) y ms-vehiculos (puerto 8082)
-                                para validar la existencia del cliente y la disponibilidad del vehículo
-                                antes de confirmar una reserva.
-                                
-                                **Recursos disponibles:**
-                                - `/api/v1/reservas` — CRUD completo de reservas
-                                - `/api/v1/estados-reserva` — CRUD de estados de reserva
+                                API REST del microservicio de reservas
+
+                                Permite gestionar reservas y estados de reserva
+                                Se comunica con ms-clientes y ms-vehiculos para validar datos externos
+
+                                Recursos disponibles
+                                - /api/v1/reservas
+                                - /api/v1/estados-reserva
+                                - /api/v2/reservas
+                                - /api/v2/estados-reserva
                                 """)
                         .version("1.0.0")
                         .contact(new Contact()
                                 .name("Equipo Desarrollo FullStack")
                                 .email("equipo@duoc.cl"))
                         .license(new License()
-                                .name("DuocUC - DSY1103")
+                                .name("DuocUC DSY1103")
                                 .url("https://www.duoc.cl")))
                 .servers(List.of(
                         new Server()

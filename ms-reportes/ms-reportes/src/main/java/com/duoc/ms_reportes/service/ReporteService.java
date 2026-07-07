@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Contiene la logica de negocio para reportes
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor

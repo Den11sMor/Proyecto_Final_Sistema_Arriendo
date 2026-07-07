@@ -4,29 +4,31 @@ import com.duoc.mssucursales.model.Region;
 import com.duoc.mssucursales.model.Sucursal;
 import com.duoc.mssucursales.repository.RegionRepository;
 import com.duoc.mssucursales.repository.SucursalRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+/**
+ * Carga datos iniciales de regiones y sucursales cuando las tablas estan vacias
+ */
 @Component
+@RequiredArgsConstructor
+@Slf4j
 public class DataLoader implements CommandLineRunner {
 
     private final RegionRepository regionRepository;
     private final SucursalRepository sucursalRepository;
 
-    public DataLoader(RegionRepository regionRepository, SucursalRepository sucursalRepository) {
-        this.regionRepository = regionRepository;
-        this.sucursalRepository = sucursalRepository;
-    }
-
     @Override
-    public void run(String... args) throws Exception {
-
+    public void run(String... args) {
         if (regionRepository.count() == 0 && sucursalRepository.count() == 0) {
+            log.info("Cargando datos iniciales de regiones y sucursales");
 
             Region regionMetropolitana = new Region();
-            regionMetropolitana.setNombre("Región Metropolitana");
+            regionMetropolitana.setNombre("Region Metropolitana");
             regionMetropolitana.setCodigo("RM");
             regionMetropolitana.setNumeroRegion(13);
             regionMetropolitana.setCapitalRegional("Santiago");
@@ -34,18 +36,18 @@ public class DataLoader implements CommandLineRunner {
             regionMetropolitana.setFechaCreacion(LocalDate.now());
 
             Region regionValparaiso = new Region();
-            regionValparaiso.setNombre("Región de Valparaíso");
+            regionValparaiso.setNombre("Region de Valparaiso");
             regionValparaiso.setCodigo("V");
             regionValparaiso.setNumeroRegion(5);
-            regionValparaiso.setCapitalRegional("Valparaíso");
+            regionValparaiso.setCapitalRegional("Valparaiso");
             regionValparaiso.setActiva(true);
             regionValparaiso.setFechaCreacion(LocalDate.now());
 
             Region regionBiobio = new Region();
-            regionBiobio.setNombre("Región del Biobío");
+            regionBiobio.setNombre("Region del Biobio");
             regionBiobio.setCodigo("VIII");
             regionBiobio.setNumeroRegion(8);
-            regionBiobio.setCapitalRegional("Concepción");
+            regionBiobio.setCapitalRegional("Concepcion");
             regionBiobio.setActiva(true);
             regionBiobio.setFechaCreacion(LocalDate.now());
 
@@ -63,18 +65,18 @@ public class DataLoader implements CommandLineRunner {
             sucursalSantiago.setRegion(regionMetropolitana);
 
             Sucursal sucursalValparaiso = new Sucursal();
-            sucursalValparaiso.setNombre("Sucursal Valparaíso");
+            sucursalValparaiso.setNombre("Sucursal Valparaiso");
             sucursalValparaiso.setDireccion("Calle Prat 456");
-            sucursalValparaiso.setComuna("Valparaíso");
+            sucursalValparaiso.setComuna("Valparaiso");
             sucursalValparaiso.setTelefono(322345678);
             sucursalValparaiso.setOperativa(true);
             sucursalValparaiso.setFechaApertura(LocalDate.of(2024, 5, 10));
             sucursalValparaiso.setRegion(regionValparaiso);
 
             Sucursal sucursalConcepcion = new Sucursal();
-            sucursalConcepcion.setNombre("Sucursal Concepción");
+            sucursalConcepcion.setNombre("Sucursal Concepcion");
             sucursalConcepcion.setDireccion("Av. Los Carrera 789");
-            sucursalConcepcion.setComuna("Concepción");
+            sucursalConcepcion.setComuna("Concepcion");
             sucursalConcepcion.setTelefono(412345678);
             sucursalConcepcion.setOperativa(true);
             sucursalConcepcion.setFechaApertura(LocalDate.of(2024, 7, 20));
@@ -83,7 +85,10 @@ public class DataLoader implements CommandLineRunner {
             sucursalRepository.save(sucursalSantiago);
             sucursalRepository.save(sucursalValparaiso);
             sucursalRepository.save(sucursalConcepcion);
+
+            log.info("Datos iniciales de regiones y sucursales cargados correctamente");
+        } else {
+            log.info("Ya existen regiones o sucursales registradas no se cargan datos iniciales");
         }
     }
-
 }

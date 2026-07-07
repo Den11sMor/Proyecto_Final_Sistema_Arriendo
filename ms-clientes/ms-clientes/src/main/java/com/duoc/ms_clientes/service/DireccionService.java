@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Servicio encargado de la logica de direcciones.
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -23,7 +26,7 @@ public class DireccionService {
     private final ClienteRepository clienteRepository;
     private final DireccionMapper direccionMapper;
 
-    public List<DireccionDTO> findAll(){
+    public List<DireccionDTO> findAll() {
         log.info("Listando todas las direcciones");
 
         return direccionRepository.findAll()
@@ -32,20 +35,20 @@ public class DireccionService {
                 .toList();
     }
 
-    public DireccionDTO findById(Integer id){
+    public DireccionDTO findById(Integer id) {
         log.info("Buscando direccion por id: {}", id);
 
         Direccion direccion = direccionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Direccion no encontrada con id: "+ id));
+                .orElseThrow(() -> new ResourceNotFoundException("Direccion no encontrada con id: " + id));
 
         return direccionMapper.toDTO(direccion);
     }
 
-    public DireccionDTO save(DireccionRequestDTO request){
+    public DireccionDTO save(DireccionRequestDTO request) {
         log.info("Guardando nueva direccion para cliente id: {}", request.getClienteId());
 
         Cliente cliente = clienteRepository.findById(request.getClienteId())
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: "+request.getClienteId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + request.getClienteId()));
 
         Direccion direccion = direccionMapper.toEntity(request, cliente);
         Direccion direccionGuardada = direccionRepository.save(direccion);
@@ -53,11 +56,11 @@ public class DireccionService {
         return direccionMapper.toDTO(direccionGuardada);
     }
 
-    public DireccionDTO update(Integer id, DireccionRequestDTO request){
-        log.info("Actualizar direcion con id: {}", id);
+    public DireccionDTO update(Integer id, DireccionRequestDTO request) {
+        log.info("Actualizando direccion con id: {}", id);
 
         Direccion direccion = direccionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Direccion no encontrada con id: "+ id));
+                .orElseThrow(() -> new ResourceNotFoundException("Direccion no encontrada con id: " + id));
 
         Cliente cliente = clienteRepository.findById(request.getClienteId())
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + request.getClienteId()));
@@ -84,6 +87,4 @@ public class DireccionService {
 
         direccionRepository.delete(direccion);
     }
-
-    }
-
+}

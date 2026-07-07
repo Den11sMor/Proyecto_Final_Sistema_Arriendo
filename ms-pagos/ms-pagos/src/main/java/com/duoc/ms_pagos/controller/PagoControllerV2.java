@@ -4,6 +4,8 @@ import com.duoc.ms_pagos.assemblers.PagoModelAssembler;
 import com.duoc.ms_pagos.dto.PagoDTO;
 import com.duoc.ms_pagos.dto.PagoRequestDTO;
 import com.duoc.ms_pagos.service.PagoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -19,12 +21,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v2")
+@Tag(name = "Pagos V2", description = "Operaciones de pagos con respuestas HATEOAS")
 public class PagoControllerV2 {
 
     private final PagoService pagoService;
     private final PagoModelAssembler pagoModelAssembler;
 
     @GetMapping("/pagos")
+    @Operation(summary = "Listar pagos con HATEOAS", description = "Retorna todos los pagos con enlaces relacionados")
     public ResponseEntity<CollectionModel<EntityModel<PagoDTO>>> findAll() {
         List<EntityModel<PagoDTO>> pagos = pagoService.findAll()
                 .stream()
@@ -38,12 +42,14 @@ public class PagoControllerV2 {
     }
 
     @GetMapping("/pagos/{id}")
+    @Operation(summary = "Buscar pago por ID con HATEOAS", description = "Retorna un pago con enlaces relacionados")
     public ResponseEntity<EntityModel<PagoDTO>> findById(@PathVariable Integer id) {
         PagoDTO pago = pagoService.findById(id);
         return ResponseEntity.ok(pagoModelAssembler.toModel(pago));
     }
 
     @PostMapping("/pagos")
+    @Operation(summary = "Crear pago con HATEOAS", description = "Registra un nuevo pago y retorna enlaces relacionados")
     public ResponseEntity<EntityModel<PagoDTO>> save(@Valid @RequestBody PagoRequestDTO requestDTO) {
         PagoDTO pagoCreado = pagoService.save(requestDTO);
 
@@ -53,6 +59,7 @@ public class PagoControllerV2 {
     }
 
     @PutMapping("/pagos/{id}")
+    @Operation(summary = "Actualizar pago con HATEOAS", description = "Actualiza un pago existente y retorna enlaces relacionados")
     public ResponseEntity<EntityModel<PagoDTO>> update(@PathVariable Integer id,
                                                        @Valid @RequestBody PagoRequestDTO requestDTO) {
         PagoDTO pagoActualizado = pagoService.update(id, requestDTO);
@@ -60,12 +67,14 @@ public class PagoControllerV2 {
     }
 
     @DeleteMapping("/pagos/{id}")
+    @Operation(summary = "Eliminar pago", description = "Elimina un pago segun su identificador")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         pagoService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/pagos/rango")
+    @Operation(summary = "Buscar pagos por rango de monto con HATEOAS", description = "Retorna pagos filtrados por monto minimo y maximo con enlaces relacionados")
     public ResponseEntity<CollectionModel<EntityModel<PagoDTO>>> buscarPorRangoMonto(
             @RequestParam BigDecimal min,
             @RequestParam BigDecimal max) {

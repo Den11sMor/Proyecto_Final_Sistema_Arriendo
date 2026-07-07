@@ -42,53 +42,65 @@ class EstadoReservaControllerTest {
 
     @BeforeEach
     void setUp() {
-        estadoDTO = new EstadoReservaDTO(1, "Pendiente", "En espera de confirmación", 1, true, LocalDateTime.now());
-        requestDTO = new EstadoReservaRequestDTO("Pendiente", "En espera de confirmación", 1, true, LocalDateTime.now());
+        estadoDTO = new EstadoReservaDTO(1, "Pendiente", "En espera de confirmacion", 1, true, LocalDateTime.now());
+        requestDTO = new EstadoReservaRequestDTO("Pendiente", "En espera de confirmacion", 1, true, LocalDateTime.now());
     }
 
     @Test
     void findAll_ReturnsOk() throws Exception {
         when(estadoReservaService.findAll()).thenReturn(List.of(estadoDTO));
+
         mockMvc.perform(get("/api/v1/estados-reserva"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].nombre").value("Pendiente"));
+
         verify(estadoReservaService).findAll();
     }
 
     @Test
     void findById_ReturnsOk() throws Exception {
         when(estadoReservaService.findById(1)).thenReturn(estadoDTO);
+
         mockMvc.perform(get("/api/v1/estados-reserva/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
+
         verify(estadoReservaService).findById(1);
     }
 
     @Test
     void save_ReturnsCreated() throws Exception {
         when(estadoReservaService.save(any(EstadoReservaRequestDTO.class))).thenReturn(estadoDTO);
-        mockMvc.perform(post("/api/v1/estados-reserva").contentType(MediaType.APPLICATION_JSON)
+
+        mockMvc.perform(post("/api/v1/estados-reserva")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.nombre").value("Pendiente"));
+
         verify(estadoReservaService).save(any(EstadoReservaRequestDTO.class));
     }
 
     @Test
     void update_ReturnsOk() throws Exception {
         when(estadoReservaService.update(eq(1), any(EstadoReservaRequestDTO.class))).thenReturn(estadoDTO);
-        mockMvc.perform(put("/api/v1/estados-reserva/1").contentType(MediaType.APPLICATION_JSON)
+
+        mockMvc.perform(put("/api/v1/estados-reserva/1")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.prioridad").value(1));
+
         verify(estadoReservaService).update(eq(1), any(EstadoReservaRequestDTO.class));
     }
 
     @Test
     void delete_ReturnsNoContent() throws Exception {
         doNothing().when(estadoReservaService).delete(1);
+
         mockMvc.perform(delete("/api/v1/estados-reserva/1"))
                 .andExpect(status().isNoContent());
+
         verify(estadoReservaService).delete(1);
     }
 }

@@ -6,6 +6,7 @@ import com.duoc.msvehiculos.exception.GlobalExceptionHandler;
 import com.duoc.msvehiculos.service.VehiculoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,19 +21,16 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Pruebas del controlador V1 de vehiculos.
+ */
 @WebMvcTest(VehiculoController.class)
 @Import(GlobalExceptionHandler.class)
+@DisplayName("VehiculoController V1")
 class VehiculoControllerTest {
 
     @Autowired
@@ -79,6 +77,7 @@ class VehiculoControllerTest {
     }
 
     @Test
+    @DisplayName("Debe listar vehiculos")
     void testFindAll() throws Exception {
         when(vehiculoService.findAll()).thenReturn(List.of(vehiculoDTO));
 
@@ -90,6 +89,7 @@ class VehiculoControllerTest {
     }
 
     @Test
+    @DisplayName("Debe buscar vehiculo por id")
     void testFindById() throws Exception {
         when(vehiculoService.findById(1)).thenReturn(vehiculoDTO);
 
@@ -102,6 +102,7 @@ class VehiculoControllerTest {
     }
 
     @Test
+    @DisplayName("Debe crear vehiculo")
     void testSave() throws Exception {
         when(vehiculoService.save(any(VehiculoRequestDTO.class))).thenReturn(vehiculoDTO);
 
@@ -115,6 +116,7 @@ class VehiculoControllerTest {
     }
 
     @Test
+    @DisplayName("Debe actualizar vehiculo")
     void testUpdate() throws Exception {
         when(vehiculoService.update(eq(1), any(VehiculoRequestDTO.class))).thenReturn(vehiculoDTO);
 
@@ -128,6 +130,7 @@ class VehiculoControllerTest {
     }
 
     @Test
+    @DisplayName("Debe eliminar vehiculo")
     void testDelete() throws Exception {
         doNothing().when(vehiculoService).delete(1);
 
@@ -138,6 +141,7 @@ class VehiculoControllerTest {
     }
 
     @Test
+    @DisplayName("Debe buscar vehiculos disponibles por precio")
     void testBuscarDisponiblesPorPrecioMenor() throws Exception {
         BigDecimal precioMaximo = new BigDecimal("50000");
         when(vehiculoService.buscarDisponiblesPorPrecioMenor(precioMaximo)).thenReturn(List.of(vehiculoDTO));

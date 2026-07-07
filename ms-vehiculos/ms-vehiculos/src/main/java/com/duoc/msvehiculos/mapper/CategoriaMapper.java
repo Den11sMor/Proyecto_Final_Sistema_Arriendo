@@ -4,7 +4,13 @@ import com.duoc.msvehiculos.dto.CategoriaDTO;
 import com.duoc.msvehiculos.dto.CategoriaRequestDTO;
 import com.duoc.msvehiculos.model.Categoria;
 
+/**
+ * Convierte entidades Categoria hacia DTO y desde DTO hacia entidad.
+ */
 public class CategoriaMapper {
+
+    private CategoriaMapper() {
+    }
 
     public static CategoriaDTO toDTO(Categoria categoria) {
         if (categoria == null) {
@@ -37,7 +43,6 @@ public class CategoriaMapper {
                 .build();
     }
 
-    // agregado: actualiza campo por campo para el PUT
     public static void updateEntity(Categoria categoria, CategoriaRequestDTO dto) {
         categoria.setNombre(dto.getNombre());
         categoria.setDescripcion(dto.getDescripcion());

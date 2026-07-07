@@ -20,6 +20,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Servicio encargado de la logica de reservas.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -67,11 +70,11 @@ public class ReservaService {
         try {
             log.info("Creando nueva reserva");
 
-            // REGLA DE NEGOCIO OBLIGATORIA (IE 2.2.1): Validar consistencia cronológica de fechas
+            // Regla de negocio: validar consistencia de fechas
             validarFechasReserva(requestDTO.getFechaInicio(), requestDTO.getFechaFin());
 
             // Verifica que el cliente exista en ms-clientes
-            ClienteDTO cliente = clienteClient.obtenerClientePorId(requestDTO.getClienteId());
+            ClienteDTO cliente = clienteClient.findById(requestDTO.getClienteId());
 
             if (cliente == null || cliente.getId() == null) {
                 throw new ResourceNotFoundException(
@@ -79,18 +82,18 @@ public class ReservaService {
                 );
             }
 
-            // Verifica que el vehículo exista en ms-vehiculos
-            VehiculoDTO vehiculo = vehiculoClient.obtenerVehiculoPorId(requestDTO.getVehiculoId());
+            // Verifica que el vehiculo exista en ms-vehiculos
+            VehiculoDTO vehiculo = vehiculoClient.findById(requestDTO.getVehiculoId());
 
             if (vehiculo == null || vehiculo.getId() == null) {
                 throw new ResourceNotFoundException(
-                        "Vehículo no encontrado con id: " + requestDTO.getVehiculoId()
+                        "Vehiculo no encontrado con id: " + requestDTO.getVehiculoId()
                 );
             }
 
-            // Valida disponibilidad del vehículo
+            // Valida disponibilidad del vehiculo
             if (vehiculo.getDisponible() != null && !vehiculo.getDisponible()) {
-                throw new IllegalStateException("El vehículo no se encuentra disponible para reservar");
+                throw new IllegalStateException("El vehiculo no se encuentra disponible para reservar");
             }
 
             EstadoReserva estadoReserva = estadoReservaRepository.findById(requestDTO.getEstadoReservaId())
@@ -113,7 +116,7 @@ public class ReservaService {
         try {
             log.info("Actualizando reserva con id: {}", id);
 
-            // REGLA DE NEGOCIO OBLIGATORIA (IE 2.2.1): Validar consistencia cronológica de fechas
+            // Regla de negocio: validar consistencia de fechas
             validarFechasReserva(requestDTO.getFechaInicio(), requestDTO.getFechaFin());
 
             Reserva reserva = reservaRepository.findById(id)
@@ -121,7 +124,8 @@ public class ReservaService {
                             "Reserva no encontrada con id: " + id
                     ));
 
-            ClienteDTO cliente = clienteClient.obtenerClientePorId(requestDTO.getClienteId());
+            // Verifica que el cliente exista en ms-clientes
+            ClienteDTO cliente = clienteClient.findById(requestDTO.getClienteId());
 
             if (cliente == null || cliente.getId() == null) {
                 throw new ResourceNotFoundException(
@@ -129,11 +133,12 @@ public class ReservaService {
                 );
             }
 
-            VehiculoDTO vehiculo = vehiculoClient.obtenerVehiculoPorId(requestDTO.getVehiculoId());
+            // Verifica que el vehiculo exista en ms-vehiculos
+            VehiculoDTO vehiculo = vehiculoClient.findById(requestDTO.getVehiculoId());
 
             if (vehiculo == null || vehiculo.getId() == null) {
                 throw new ResourceNotFoundException(
-                        "Vehículo no encontrado con id: " + requestDTO.getVehiculoId()
+                        "Vehiculo no encontrado con id: " + requestDTO.getVehiculoId()
                 );
             }
 
@@ -185,11 +190,11 @@ public class ReservaService {
             throw e;
         }
     }
-    // Metodo privado auxiliar que asiste a save y update para mantener la integridad de los datos
 
+    // Metodo auxiliar para validar fechas antes de guardar o actualizar
     private void validarFechasReserva(LocalDate inicio, LocalDate fin) {
         if (fin.isBefore(inicio)) {
-            throw new IllegalArgumentException("La fecha de finalización no puede ser anterior a la fecha de inicio.");
+            throw new IllegalArgumentException("La fecha de finalizacion no puede ser anterior a la fecha de inicio.");
         }
     }
 }

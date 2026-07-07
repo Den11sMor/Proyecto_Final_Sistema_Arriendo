@@ -8,13 +8,13 @@ import com.duoc.msempleados.model.Empleado;
 import com.duoc.msempleados.repository.EmpleadoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
+/**
+ * Servicio encargado de la logica de negocio de empleados.
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -30,7 +30,7 @@ public class EmpleadoService {
             return empleadoRepository.findAll()
                     .stream()
                     .map(empleadoMapper::toDTO)
-                    .collect(Collectors.toList());
+                    .toList();
 
         } catch (Exception e) {
             log.error("Error al listar empleados", e);
@@ -38,23 +38,24 @@ public class EmpleadoService {
         }
     }
 
-    public EmpleadoDTO findById(Integer id){
+    public EmpleadoDTO findById(Integer id) {
         try {
             log.info("Buscando empleado por id: {}", id);
 
             Empleado empleado = empleadoRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado por id: {}" + id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado por id: " + id));
+
             return empleadoMapper.toDTO(empleado);
-        }catch (ResourceNotFoundException e){
-            log.error("Empleado no econtrado por id: {}", id);
-            throw  e;
-        }catch (Exception e){
+        } catch (ResourceNotFoundException e) {
+            log.error("Empleado no encontrado por id: {}", id);
+            throw e;
+        } catch (Exception e) {
             log.error("Error al buscar empleado con id: {}", id, e);
             throw e;
         }
     }
 
-    public EmpleadoDTO save(EmpleadoRequestDTO request){
+    public EmpleadoDTO save(EmpleadoRequestDTO request) {
         try {
             log.info("Guardando nuevo empleado");
 
@@ -62,62 +63,61 @@ public class EmpleadoService {
             Empleado empleadoGuardado = empleadoRepository.save(empleado);
 
             return empleadoMapper.toDTO(empleadoGuardado);
-        }catch (Exception e){
-            log.error("Error al guarda empleado", e);
+        } catch (Exception e) {
+            log.error("Error al guardar empleado", e);
             throw e;
         }
     }
 
-    public EmpleadoDTO update(Integer id, EmpleadoRequestDTO request){
+    public EmpleadoDTO update(Integer id, EmpleadoRequestDTO request) {
         try {
             log.info("Actualizando empleado por id: {}", id);
 
-            Empleado empleado= empleadoRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("empleado no encontrado por id: {}" + id));
+            Empleado empleado = empleadoRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado por id: " + id));
 
             empleadoMapper.updateEntity(empleado, request);
 
-            Empleado empleadoActulizado = empleadoRepository.save(empleado);
-            return empleadoMapper.toDTO(empleadoActulizado);
-        }catch (ResourceNotFoundException e){
+            Empleado empleadoActualizado = empleadoRepository.save(empleado);
+            return empleadoMapper.toDTO(empleadoActualizado);
+        } catch (ResourceNotFoundException e) {
             log.error("Empleado no encontrado por id: {}", id);
             throw e;
-        }catch (Exception e){
-            log.error("Erro al actualizar empleado por id: {}", id, e);
+        } catch (Exception e) {
+            log.error("Error al actualizar empleado por id: {}", id, e);
             throw e;
         }
     }
 
-    public void delete(Integer id){
+    public void delete(Integer id) {
         try {
-            log.info("Eliminado empleado por id: {}", id);
+            log.info("Eliminando empleado por id: {}", id);
 
             Empleado empleado = empleadoRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado con id: "+ id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado con id: " + id));
 
             empleadoRepository.delete(empleado);
-        }catch (ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e) {
             log.error("Empleado no encontrado con id: {}", id);
             throw e;
         } catch (Exception e) {
-            log.error("Error al eliminar empleado con id {}", id, e);
+            log.error("Error al eliminar empleado con id: {}", id, e);
             throw e;
         }
     }
 
     public List<EmpleadoDTO> listarActivosPorAnio(Integer anio) {
         try {
-            log.info("Listando empleados activos ingresados en el año: {}", anio);
+            log.info("Listando empleados activos ingresados en el anio: {}", anio);
 
             return empleadoRepository.listarEmpleadosActivosPorAnio(anio)
                     .stream()
                     .map(empleadoMapper::toDTO)
-                    .collect(Collectors.toList());
+                    .toList();
 
         } catch (Exception e) {
-            log.error("Error al listar empleados activos por año: {}", anio, e);
+            log.error("Error al listar empleados activos por anio: {}", anio, e);
             throw e;
         }
     }
-
 }

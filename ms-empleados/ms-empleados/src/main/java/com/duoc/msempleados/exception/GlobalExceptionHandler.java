@@ -6,11 +6,15 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.resource.NoResourceFoundException; // agregado: maneja rutas no encontradas
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Centraliza el manejo de errores del microservicio de empleados
+ */
+@SuppressWarnings("unused")
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -34,9 +38,18 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Map<String, String>> manejarRutaNoEncontrada(NoResourceFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("mensaje", "Ruta no encontrada");
+        error.put("detalle", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Map<String, String>> manejarMetodoNoSoportado(HttpRequestMethodNotSupportedException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("mensaje", "Método HTTP no soportado");
+        error.put("mensaje", "Operacion HTTP no soportada");
         error.put("detalle", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
@@ -50,5 +63,4 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
-
 }

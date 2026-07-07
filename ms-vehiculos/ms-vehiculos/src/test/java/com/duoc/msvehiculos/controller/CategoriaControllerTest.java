@@ -6,6 +6,7 @@ import com.duoc.msvehiculos.exception.GlobalExceptionHandler;
 import com.duoc.msvehiculos.service.CategoriaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,19 +21,16 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Pruebas del controlador V1 de categorias.
+ */
 @WebMvcTest(CategoriaController.class)
 @Import(GlobalExceptionHandler.class)
+@DisplayName("CategoriaController V1")
 class CategoriaControllerTest {
 
     @Autowired
@@ -70,6 +68,7 @@ class CategoriaControllerTest {
     }
 
     @Test
+    @DisplayName("Debe listar categorias")
     void testFindAll() throws Exception {
         when(categoriaService.findAll()).thenReturn(List.of(categoriaDTO));
 
@@ -81,6 +80,7 @@ class CategoriaControllerTest {
     }
 
     @Test
+    @DisplayName("Debe buscar categoria por id")
     void testFindById() throws Exception {
         when(categoriaService.findById(1)).thenReturn(categoriaDTO);
 
@@ -93,6 +93,7 @@ class CategoriaControllerTest {
     }
 
     @Test
+    @DisplayName("Debe crear categoria")
     void testSave() throws Exception {
         when(categoriaService.save(any(CategoriaRequestDTO.class))).thenReturn(categoriaDTO);
 
@@ -106,6 +107,7 @@ class CategoriaControllerTest {
     }
 
     @Test
+    @DisplayName("Debe actualizar categoria")
     void testUpdate() throws Exception {
         when(categoriaService.update(eq(1), any(CategoriaRequestDTO.class))).thenReturn(categoriaDTO);
 
@@ -119,6 +121,7 @@ class CategoriaControllerTest {
     }
 
     @Test
+    @DisplayName("Debe eliminar categoria")
     void testDelete() throws Exception {
         doNothing().when(categoriaService).delete(1);
 

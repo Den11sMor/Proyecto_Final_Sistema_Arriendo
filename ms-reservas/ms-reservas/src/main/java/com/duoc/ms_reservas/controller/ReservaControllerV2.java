@@ -4,11 +4,21 @@ import com.duoc.ms_reservas.assemblers.ReservaModelAssembler;
 import com.duoc.ms_reservas.dto.ReservaDTO;
 import com.duoc.ms_reservas.dto.ReservaRequestDTO;
 import com.duoc.ms_reservas.service.ReservaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,12 +30,28 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v2")
+@Tag(name = "Reservas V2", description = "Operaciones de reservas con respuestas HATEOAS")
 public class ReservaControllerV2 {
 
     private final ReservaService reservaService;
     private final ReservaModelAssembler reservaModelAssembler;
 
     @GetMapping("/reservas")
+    @Operation(
+            summary = "Listar reservas con HATEOAS",
+            description = "Retorna todas las reservas registradas con enlaces relacionados"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Reservas obtenidas correctamente",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = ReservaDTO.class))
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
     public ResponseEntity<CollectionModel<EntityModel<ReservaDTO>>> findAll() {
         List<EntityModel<ReservaDTO>> reservas = reservaService.findAll()
                 .stream()
@@ -39,13 +65,58 @@ public class ReservaControllerV2 {
     }
 
     @GetMapping("/reservas/{id}")
-    public ResponseEntity<EntityModel<ReservaDTO>> findById(@PathVariable Integer id) {
+    @Operation(
+            summary = "Buscar reserva por ID con HATEOAS",
+            description = "Retorna una reserva segun su identificador con enlaces relacionados"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Reserva encontrada"),
+            @ApiResponse(responseCode = "404", description = "Reserva no encontrada")
+    })
+    public ResponseEntity<EntityModel<ReservaDTO>> findById(
+            @Parameter(description = "ID de la reserva", example = "1", required = true)
+            @PathVariable Integer id) {
         ReservaDTO reserva = reservaService.findById(id);
         return ResponseEntity.ok(reservaModelAssembler.toModel(reserva));
     }
 
     @PostMapping("/reservas")
-    public ResponseEntity<EntityModel<ReservaDTO>> save(@Valid @RequestBody ReservaRequestDTO requestDTO) {
+    @Operation(
+            summary = "Crear reserva con HATEOAS",
+            description = "Registra una nueva reserva y retorna enlaces relacionados"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Reserva creada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada invalidos"),
+            @ApiResponse(responseCode = "404", description = "Cliente vehiculo o estado de reserva no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    public ResponseEntity<EntityModel<ReservaDTO>> save(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Datos requeridos para crear una reserva",
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ReservaRequestDTO.class),
+                            examples = @ExampleObject(
+                                    name = "Reserva",
+                                    value = """
+                                            {
+                                              "clienteId": 1,
+                                              "vehiculoId": 2,
+                                              "fechaInicio": "2026-07-01",
+                                              "fechaFin": "2026-07-05",
+                                              "cantidadDias": 4,
+                                              "montoTotal": 120000,
+                                              "observacion": "Reserva para viaje",
+                                              "activa": true,
+                                              "estadoReservaId": 1
+                                            }
+                                            """
+                            )
+                    )
+            )
+            @Valid @RequestBody ReservaRequestDTO requestDTO) {
         ReservaDTO reservaCreada = reservaService.save(requestDTO);
 
         return ResponseEntity
@@ -54,20 +125,53 @@ public class ReservaControllerV2 {
     }
 
     @PutMapping("/reservas/{id}")
-    public ResponseEntity<EntityModel<ReservaDTO>> update(@PathVariable Integer id,
-                                                          @Valid @RequestBody ReservaRequestDTO requestDTO) {
+    @Operation(
+            summary = "Actualizar reserva con HATEOAS",
+            description = "Actualiza los datos de una reserva existente y retorna enlaces relacionados"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Reserva actualizada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada invalidos"),
+            @ApiResponse(responseCode = "404", description = "Reserva cliente vehiculo o estado no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    public ResponseEntity<EntityModel<ReservaDTO>> update(
+            @Parameter(description = "ID de la reserva", example = "1", required = true)
+            @PathVariable Integer id,
+            @Valid @RequestBody ReservaRequestDTO requestDTO) {
         ReservaDTO reservaActualizada = reservaService.update(id, requestDTO);
         return ResponseEntity.ok(reservaModelAssembler.toModel(reservaActualizada));
     }
 
     @DeleteMapping("/reservas/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    @Operation(
+            summary = "Eliminar reserva",
+            description = "Elimina una reserva segun su identificador"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Reserva eliminada correctamente"),
+            @ApiResponse(responseCode = "404", description = "Reserva no encontrada"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    public ResponseEntity<Void> delete(
+            @Parameter(description = "ID de la reserva", example = "1", required = true)
+            @PathVariable Integer id) {
         reservaService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/reservas/desde-fecha")
+    @Operation(
+            summary = "Buscar reservas desde una fecha con HATEOAS",
+            description = "Retorna reservas cuya fecha de inicio sea igual o posterior a la fecha indicada con enlaces relacionados"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Reservas encontradas"),
+            @ApiResponse(responseCode = "400", description = "Fecha invalida"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
     public ResponseEntity<CollectionModel<EntityModel<ReservaDTO>>> findByFechaInicioDesde(
+            @Parameter(description = "Fecha minima en formato yyyy-MM-dd", example = "2026-07-01", required = true)
             @RequestParam
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate fecha) {

@@ -1,12 +1,14 @@
 package com.duoc.mssucursales.mapper;
 
-
 import com.duoc.mssucursales.dto.SucursalDTO;
 import com.duoc.mssucursales.dto.SucursalRequestDTO;
 import com.duoc.mssucursales.model.Region;
 import com.duoc.mssucursales.model.Sucursal;
 import org.springframework.stereotype.Component;
 
+/**
+ * Convierte datos entre la entidad Sucursal y sus DTO
+ */
 @Component
 public class SucursalMapper {
 
@@ -60,5 +62,4 @@ public class SucursalMapper {
         sucursal.setFechaApertura(requestDTO.getFechaApertura());
         sucursal.setRegion(region);
     }
-
 }

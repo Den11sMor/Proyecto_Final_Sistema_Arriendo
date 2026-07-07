@@ -7,6 +7,7 @@ import com.duoc.ms_clientes.mapper.ClienteMapper;
 import com.duoc.ms_clientes.model.Cliente;
 import com.duoc.ms_clientes.repository.ClienteRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -61,7 +62,8 @@ class ClienteServiceTest {
     }
 
     @Test
-    void testFindAll() {
+    @DisplayName("Debe retornar todos los clientes mapeados")
+    void findAll_ReturnsClientes() {
         when(clienteRepository.findAll()).thenReturn(List.of(cliente));
         when(clienteMapper.toDTO(cliente)).thenReturn(clienteDTO);
 
@@ -74,7 +76,8 @@ class ClienteServiceTest {
     }
 
     @Test
-    void testFindById() {
+    @DisplayName("Debe retornar un cliente cuando el ID existe")
+    void findById_WhenExists_ReturnsCliente() {
         when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente));
         when(clienteMapper.toDTO(cliente)).thenReturn(clienteDTO);
 
@@ -86,7 +89,8 @@ class ClienteServiceTest {
     }
 
     @Test
-    void testFindByIdNoEncontrado() {
+    @DisplayName("Debe lanzar excepcion cuando el cliente no existe")
+    void findById_WhenNotExists_ThrowsResourceNotFoundException() {
         when(clienteRepository.findById(99)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> clienteService.findById(99));
@@ -94,7 +98,8 @@ class ClienteServiceTest {
     }
 
     @Test
-    void testSave() {
+    @DisplayName("Debe guardar un cliente correctamente")
+    void save_ReturnsClienteCreated() {
         when(clienteMapper.toEntity(requestDTO)).thenReturn(cliente);
         when(clienteRepository.save(cliente)).thenReturn(cliente);
         when(clienteMapper.toDTO(cliente)).thenReturn(clienteDTO);
@@ -107,7 +112,8 @@ class ClienteServiceTest {
     }
 
     @Test
-    void testUpdate() {
+    @DisplayName("Debe actualizar un cliente existente")
+    void update_WhenExists_ReturnsClienteUpdated() {
         when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente));
         when(clienteRepository.save(any(Cliente.class))).thenReturn(cliente);
         when(clienteMapper.toDTO(cliente)).thenReturn(clienteDTO);
@@ -121,7 +127,8 @@ class ClienteServiceTest {
     }
 
     @Test
-    void testDelete() {
+    @DisplayName("Debe eliminar un cliente existente")
+    void delete_WhenExists_DeletesCliente() {
         when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente));
 
         clienteService.delete(1);
@@ -131,7 +138,8 @@ class ClienteServiceTest {
     }
 
     @Test
-    void testBuscarPorEmail() {
+    @DisplayName("Debe buscar clientes por email")
+    void buscarPorEmail_ReturnsClientes() {
         when(clienteRepository.findByEmailContainingIgnoreCase("gmail")).thenReturn(List.of(cliente));
         when(clienteMapper.toDTO(cliente)).thenReturn(clienteDTO);
 

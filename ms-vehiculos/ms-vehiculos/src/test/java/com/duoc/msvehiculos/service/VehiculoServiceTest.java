@@ -8,6 +8,7 @@ import com.duoc.msvehiculos.model.Vehiculo;
 import com.duoc.msvehiculos.repository.CategoriaRepository;
 import com.duoc.msvehiculos.repository.VehiculoRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,15 +20,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+/**
+ * Pruebas unitarias del servicio de vehiculos.
+ */
 @ExtendWith(MockitoExtension.class)
+@DisplayName("VehiculoService")
 class VehiculoServiceTest {
 
     @Mock
@@ -84,6 +85,7 @@ class VehiculoServiceTest {
     }
 
     @Test
+    @DisplayName("Debe listar vehiculos")
     void testFindAll() {
         when(vehiculoRepository.findAll()).thenReturn(List.of(vehiculo));
 
@@ -96,6 +98,7 @@ class VehiculoServiceTest {
     }
 
     @Test
+    @DisplayName("Debe buscar vehiculo por id")
     void testFindById() {
         when(vehiculoRepository.findById(1)).thenReturn(Optional.of(vehiculo));
 
@@ -108,6 +111,7 @@ class VehiculoServiceTest {
     }
 
     @Test
+    @DisplayName("Debe lanzar error cuando vehiculo no existe")
     void testFindByIdNoEncontrado() {
         when(vehiculoRepository.findById(99)).thenReturn(Optional.empty());
 
@@ -116,6 +120,7 @@ class VehiculoServiceTest {
     }
 
     @Test
+    @DisplayName("Debe guardar vehiculo")
     void testSave() {
         when(categoriaRepository.findById(1)).thenReturn(Optional.of(categoria));
         when(vehiculoRepository.save(any(Vehiculo.class))).thenReturn(vehiculo);
@@ -129,6 +134,7 @@ class VehiculoServiceTest {
     }
 
     @Test
+    @DisplayName("Debe lanzar error al guardar si categoria no existe")
     void testSaveCategoriaNoEncontrada() {
         when(categoriaRepository.findById(1)).thenReturn(Optional.empty());
 
@@ -137,6 +143,7 @@ class VehiculoServiceTest {
     }
 
     @Test
+    @DisplayName("Debe actualizar vehiculo")
     void testUpdate() {
         when(vehiculoRepository.findById(1)).thenReturn(Optional.of(vehiculo));
         when(categoriaRepository.findById(1)).thenReturn(Optional.of(categoria));
@@ -152,6 +159,7 @@ class VehiculoServiceTest {
     }
 
     @Test
+    @DisplayName("Debe eliminar vehiculo")
     void testDelete() {
         when(vehiculoRepository.findById(1)).thenReturn(Optional.of(vehiculo));
 
@@ -162,6 +170,7 @@ class VehiculoServiceTest {
     }
 
     @Test
+    @DisplayName("Debe buscar vehiculos disponibles por precio")
     void testBuscarDisponiblesPorPrecioMenor() {
         BigDecimal precioMaximo = new BigDecimal("50000");
         when(vehiculoRepository.findByDisponibleTrueAndPrecioArriendoDiarioLessThan(precioMaximo))

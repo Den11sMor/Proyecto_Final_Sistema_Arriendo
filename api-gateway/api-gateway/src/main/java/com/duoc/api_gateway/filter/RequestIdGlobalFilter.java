@@ -7,6 +7,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+/**
+ * Agrega un identificador unico a cada peticion que pasa por el gateway
+ */
 @Configuration
 public class RequestIdGlobalFilter {
 

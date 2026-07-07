@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Servicio encargado de la logica de negocio de categorias.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -20,7 +23,7 @@ public class CategoriaService {
     private final CategoriaRepository categoriaRepository;
 
     public List<CategoriaDTO> findAll() {
-        log.info("Listando todas las categorías");
+        log.info("Listando todas las categorias");
 
         try {
             return categoriaRepository.findAll()
@@ -28,22 +31,22 @@ public class CategoriaService {
                     .map(CategoriaMapper::toDTO)
                     .toList();
         } catch (Exception e) {
-            log.error("Error al listar categorías", e);
+            log.error("Error al listar categorias", e);
             throw e;
         }
     }
 
     public CategoriaDTO findById(Integer id) {
-        log.info("Buscando categoría con id: {}", id);
+        log.info("Buscando categoria con id: {}", id);
 
         Categoria categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada con id: " + id));
 
         return CategoriaMapper.toDTO(categoria);
     }
 
     public CategoriaDTO save(CategoriaRequestDTO dto) {
-        log.info("Guardando nueva categoría: {}", dto.getNombre());
+        log.info("Guardando nueva categoria: {}", dto.getNombre());
 
         try {
             Categoria categoria = CategoriaMapper.toEntity(dto);
@@ -51,16 +54,16 @@ public class CategoriaService {
 
             return CategoriaMapper.toDTO(categoriaGuardada);
         } catch (Exception e) {
-            log.error("Error al guardar categoría", e);
+            log.error("Error al guardar categoria", e);
             throw e;
         }
     }
 
     public CategoriaDTO update(Integer id, CategoriaRequestDTO dto) {
-        log.info("Actualizando categoría con id: {}", id);
+        log.info("Actualizando categoria con id: {}", id);
 
         Categoria categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada con id: " + id));
 
         CategoriaMapper.updateEntity(categoria, dto);
 
@@ -70,10 +73,10 @@ public class CategoriaService {
     }
 
     public void delete(Integer id) {
-        log.info("Eliminando categoría con id: {}", id);
+        log.info("Eliminando categoria con id: {}", id);
 
         Categoria categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada con id: " + id));
 
         categoriaRepository.delete(categoria);
     }

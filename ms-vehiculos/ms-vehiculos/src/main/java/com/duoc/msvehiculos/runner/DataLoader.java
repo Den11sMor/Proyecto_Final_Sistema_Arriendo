@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Carga datos iniciales para categorias y vehiculos cuando la base esta vacia.
+ */
 @Component
 @RequiredArgsConstructor
 public class DataLoader implements CommandLineRunner {
@@ -20,13 +23,10 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-
-
         if (categoriaRepository.count() == 0) {
-
             Categoria categoriaEconomico = Categoria.builder()
-                    .nombre("Económico")
-                    .descripcion("Vehículos pequeños de bajo consumo")
+                    .nombre("Economico")
+                    .descripcion("Vehiculos pequenos de bajo consumo")
                     .tarifaBase(new BigDecimal("25000"))
                     .capacidadPasajeros(5)
                     .activa(true)
@@ -35,7 +35,7 @@ public class DataLoader implements CommandLineRunner {
 
             Categoria categoriaSuv = Categoria.builder()
                     .nombre("SUV")
-                    .descripcion("Vehículos familiares con mayor espacio")
+                    .descripcion("Vehiculos familiares con mayor espacio")
                     .tarifaBase(new BigDecimal("45000"))
                     .capacidadPasajeros(5)
                     .activa(true)
@@ -44,7 +44,7 @@ public class DataLoader implements CommandLineRunner {
 
             Categoria categoriaPremium = Categoria.builder()
                     .nombre("Premium")
-                    .descripcion("Vehículos de gama alta para arriendo especial")
+                    .descripcion("Vehiculos de gama alta para arriendo especial")
                     .tarifaBase(new BigDecimal("70000"))
                     .capacidadPasajeros(5)
                     .activa(true)
@@ -57,7 +57,6 @@ public class DataLoader implements CommandLineRunner {
         }
 
         if (vehiculoRepository.count() == 0) {
-
             Categoria economico = categoriaRepository.findAll().get(0);
             Categoria suv = categoriaRepository.findAll().get(1);
             Categoria premium = categoriaRepository.findAll().get(2);

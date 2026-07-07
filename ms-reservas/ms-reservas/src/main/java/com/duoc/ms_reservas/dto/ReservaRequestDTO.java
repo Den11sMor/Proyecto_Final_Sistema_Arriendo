@@ -1,6 +1,5 @@
 package com.duoc.ms_reservas.dto;
 
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -12,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -22,14 +20,14 @@ import java.time.LocalDate;
 @Schema(description = "Datos necesarios para crear o actualizar una reserva")
 public class ReservaRequestDTO {
 
-    @Schema(description = "ID del cliente", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "El id del cliente es obligatorio")
     @Min(value = 1, message = "El id del cliente debe ser mayor o igual a 1")
+    @Schema(description = "ID del cliente", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer clienteId;
 
-    @NotNull(message = "El id del vehículo es obligatorio")
-    @Min(value = 1, message = "El id del vehículo debe ser mayor o igual a 1")
-    @Schema(description = "ID del vehículo", example = "2", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "El id del vehiculo es obligatorio")
+    @Min(value = 1, message = "El id del vehiculo debe ser mayor o igual a 1")
+    @Schema(description = "ID del vehiculo", example = "2", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer vehiculoId;
 
     @NotNull(message = "La fecha de inicio es obligatoria")
@@ -39,12 +37,12 @@ public class ReservaRequestDTO {
 
     @NotNull(message = "La fecha de fin es obligatoria")
     @FutureOrPresent(message = "La fecha de fin no puede ser pasada")
-    @Schema(description = "Fecha de término", example = "2026-07-05", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Fecha de fin", example = "2026-07-05", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDate fechaFin;
 
-    @NotNull(message = "La cantidad de días es obligatoria")
-    @Min(value = 1, message = "La cantidad de días debe ser mayor o igual a 1")
-    @Schema(description = "Cantidad de días de arriendo", example = "4", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "La cantidad de dias es obligatoria")
+    @Min(value = 1, message = "La cantidad de dias debe ser mayor o igual a 1")
+    @Schema(description = "Cantidad de dias de arriendo", example = "4", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer cantidadDias;
 
     @NotNull(message = "El monto total es obligatorio")
@@ -52,9 +50,9 @@ public class ReservaRequestDTO {
     @Schema(description = "Monto total a pagar", example = "120000", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal montoTotal;
 
-    @NotBlank(message = "La observación es obligatoria")
-    @Size(min = 3, max = 150, message = "La observación debe tener entre 3 y 150 caracteres")
-    @Schema(description = "Observación de la reserva", example = "Reserva para viaje de negocios", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "La observacion es obligatoria")
+    @Size(min = 3, max = 150, message = "La observacion debe tener entre 3 y 150 caracteres")
+    @Schema(description = "Observacion de la reserva", example = "Reserva para viaje de negocios", requiredMode = Schema.RequiredMode.REQUIRED)
     private String observacion;
 
     @NotNull(message = "El estado activo de la reserva es obligatorio")
@@ -65,5 +63,4 @@ public class ReservaRequestDTO {
     @Min(value = 1, message = "El id del estado de reserva debe ser mayor o igual a 1")
     @Schema(description = "ID del estado de la reserva", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer estadoReservaId;
-
 }

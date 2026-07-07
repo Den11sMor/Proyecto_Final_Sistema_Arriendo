@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Servicio encargado de la logica de negocio de vehiculos.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -78,7 +81,6 @@ public class VehiculoService {
             Categoria categoria = categoriaRepository.findById(dto.getCategoriaId())
                     .orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada con id: " + dto.getCategoriaId()));
 
-            // agregado: actualiza campo por campo para cumplir la nota PUT
             VehiculoMapper.updateEntity(vehiculo, dto, categoria);
 
             Vehiculo vehiculoActualizado = vehiculoRepository.save(vehiculo);
@@ -104,7 +106,6 @@ public class VehiculoService {
         }
     }
 
-    // agregado: metodo para la query requerida por la prueba
     public List<VehiculoDTO> buscarDisponiblesPorPrecioMenor(BigDecimal precioMaximo) {
         log.info("Buscando vehiculos disponibles con precio menor a: {}", precioMaximo);
 

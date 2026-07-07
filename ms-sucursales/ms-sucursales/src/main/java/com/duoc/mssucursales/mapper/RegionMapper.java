@@ -5,6 +5,9 @@ import com.duoc.mssucursales.dto.RegionRequestDTO;
 import com.duoc.mssucursales.model.Region;
 import org.springframework.stereotype.Component;
 
+/**
+ * Convierte datos entre la entidad Region y sus DTO
+ */
 @Component
 public class RegionMapper {
 
@@ -51,5 +54,4 @@ public class RegionMapper {
         region.setActiva(requestDTO.getActiva());
         region.setFechaCreacion(requestDTO.getFechaCreacion());
     }
-
 }

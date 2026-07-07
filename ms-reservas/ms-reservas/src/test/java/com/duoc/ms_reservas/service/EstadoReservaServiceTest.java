@@ -26,8 +26,10 @@ class EstadoReservaServiceTest {
 
     @Mock
     private EstadoReservaRepository estadoReservaRepository;
+
     @Mock
     private EstadoReservaMapper estadoReservaMapper;
+
     @InjectMocks
     private EstadoReservaService estadoReservaService;
 
@@ -41,8 +43,8 @@ class EstadoReservaServiceTest {
         estadoReserva.setId(1);
         estadoReserva.setNombre("Pendiente");
 
-        estadoReservaDTO = new EstadoReservaDTO(1, "Pendiente", "En espera de confirmación", 1, true, LocalDateTime.now());
-        requestDTO = new EstadoReservaRequestDTO("Pendiente", "En espera de confirmación", 1, true, LocalDateTime.now());
+        estadoReservaDTO = new EstadoReservaDTO(1, "Pendiente", "En espera de confirmacion", 1, true, LocalDateTime.now());
+        requestDTO = new EstadoReservaRequestDTO("Pendiente", "En espera de confirmacion", 1, true, LocalDateTime.now());
     }
 
     @Test

@@ -1,63 +1,152 @@
 package com.duoc.ms_pagos.controller;
 
 import com.duoc.ms_pagos.dto.PagoDTO;
+import com.duoc.ms_pagos.dto.PagoRequestDTO;
+import com.duoc.ms_pagos.exception.GlobalExceptionHandler;
 import com.duoc.ms_pagos.service.PagoService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+/**
+ * Pruebas del controlador V1 de pagos.
+ */
+@WebMvcTest(PagoController.class)
+@Import(GlobalExceptionHandler.class)
+@DisplayName("PagoController V1")
 class PagoControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
     private PagoService pagoService;
 
-    @InjectMocks
-    private PagoController pagoController;
+    private PagoDTO pagoDTO;
+    private PagoRequestDTO requestDTO;
 
-    @Test
-    void findById_deberiaRetornarPagoDelService() {
-        PagoDTO esperado = new PagoDTO();
-        when(pagoService.findById(1)).thenReturn(esperado);
+    @BeforeEach
+    void setUp() {
+        pagoDTO = new PagoDTO(
+                1,
+                10,
+                "Tarjeta de credito",
+                new BigDecimal("125000"),
+                "TX-2024-0001",
+                true,
+                LocalDate.of(2024, 4, 20),
+                "Pago confirmado"
+        );
 
-        ResponseEntity<PagoDTO> respuesta = pagoController.findById(1);
-
-        assertEquals(200, respuesta.getStatusCode().value());
-        assertSame(esperado, respuesta.getBody());
-        verify(pagoService).findById(1);
+        requestDTO = new PagoRequestDTO(
+                10,
+                "Tarjeta de credito",
+                new BigDecimal("125000"),
+                "TX-2024-0001",
+                true,
+                LocalDate.of(2024, 4, 20),
+                "Pago confirmado"
+        );
     }
 
     @Test
-    void buscarPorRangoMonto_deberiaDelegarEnService() {
+    @DisplayName("Debe listar pagos")
+    void testFindAll() throws Exception {
+        when(pagoService.findAll()).thenReturn(List.of(pagoDTO));
+
+        mockMvc.perform(get("/api/v1/pagos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].metodoPago").value("Tarjeta de credito"));
+
+        verify(pagoService, times(1)).findAll();
+    }
+
+    @Test
+    @DisplayName("Debe buscar pago por id")
+    void testFindById() throws Exception {
+        when(pagoService.findById(1)).thenReturn(pagoDTO);
+
+        mockMvc.perform(get("/api/v1/pagos/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.metodoPago").value("Tarjeta de credito"));
+
+        verify(pagoService, times(1)).findById(1);
+    }
+
+    @Test
+    @DisplayName("Debe crear pago")
+    void testSave() throws Exception {
+        when(pagoService.save(any(PagoRequestDTO.class))).thenReturn(pagoDTO);
+
+        mockMvc.perform(post("/api/v1/pagos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.metodoPago").value("Tarjeta de credito"));
+
+        verify(pagoService, times(1)).save(any(PagoRequestDTO.class));
+    }
+
+    @Test
+    @DisplayName("Debe actualizar pago")
+    void testUpdate() throws Exception {
+        when(pagoService.update(eq(1), any(PagoRequestDTO.class))).thenReturn(pagoDTO);
+
+        mockMvc.perform(put("/api/v1/pagos/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.metodoPago").value("Tarjeta de credito"));
+
+        verify(pagoService, times(1)).update(eq(1), any(PagoRequestDTO.class));
+    }
+
+    @Test
+    @DisplayName("Debe eliminar pago")
+    void testDelete() throws Exception {
+        doNothing().when(pagoService).delete(1);
+
+        mockMvc.perform(delete("/api/v1/pagos/1"))
+                .andExpect(status().isNoContent());
+
+        verify(pagoService, times(1)).delete(1);
+    }
+
+    @Test
+    @DisplayName("Debe buscar pagos por rango de monto")
+    void testBuscarPorRangoMonto() throws Exception {
         BigDecimal min = new BigDecimal("10000");
-        BigDecimal max = new BigDecimal("50000");
-        List<PagoDTO> esperado = List.of(new PagoDTO());
+        BigDecimal max = new BigDecimal("200000");
 
-        when(pagoService.buscarPorRangoMonto(min, max)).thenReturn(esperado);
+        when(pagoService.buscarPorRangoMonto(min, max)).thenReturn(List.of(pagoDTO));
 
-        ResponseEntity<List<PagoDTO>> respuesta = pagoController.buscarPorRangoMonto(min, max);
+        mockMvc.perform(get("/api/v1/pagos/rango")
+                        .param("min", "10000")
+                        .param("max", "200000"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].metodoPago").value("Tarjeta de credito"));
 
-        assertEquals(200, respuesta.getStatusCode().value());
-        assertSame(esperado, respuesta.getBody());
-        verify(pagoService).buscarPorRangoMonto(min, max);
-    }
-
-    @Test
-    void delete_deberiaEliminarPago() {
-        ResponseEntity<Void> respuesta = pagoController.delete(1);
-
-        assertEquals(204, respuesta.getStatusCode().value());
-        verify(pagoService).delete(1);
+        verify(pagoService, times(1)).buscarPorRangoMonto(min, max);
     }
 }

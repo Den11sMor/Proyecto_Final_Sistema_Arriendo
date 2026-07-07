@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Contiene la logica de negocio para pagos
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -52,7 +55,6 @@ public class PagoService {
         log.info("Creando pago para reserva id: {}", requestDTO.getReservaId());
 
         try {
-            // agregado: obtiene la reserva desde ms-reservas y usa su monto total
             ReservaDTO reservaDTO = obtenerReserva(requestDTO.getReservaId());
             requestDTO.setMonto(reservaDTO.getMontoTotal());
 
@@ -76,11 +78,9 @@ public class PagoService {
             Pago pago = pagoRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Pago no encontrado con id: " + id));
 
-            // agregado: obtiene la reserva desde ms-reservas y usa su monto total
             ReservaDTO reservaDTO = obtenerReserva(requestDTO.getReservaId());
             requestDTO.setMonto(reservaDTO.getMontoTotal());
 
-            // agregado: actualización campo por campo para PUT
             pagoMapper.updateEntity(pago, requestDTO);
 
             Pago pagoActualizado = pagoRepository.save(pago);

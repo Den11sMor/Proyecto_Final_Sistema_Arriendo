@@ -11,6 +11,9 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Maneja las excepciones globales del microservicio de vehiculos.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -33,7 +36,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
     }
 
-    // agregado: maneja rutas no encontradas
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<Map<String, String>> manejarRutaNoEncontrada(NoResourceFoundException ex) {
         Map<String, String> error = new HashMap<>();
@@ -42,11 +44,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    // agregado: maneja métodos HTTP incorrectos
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Map<String, String>> manejarMetodoNoPermitido(HttpRequestMethodNotSupportedException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("mensaje", "Método HTTP no permitido para esta ruta");
+        error.put("mensaje", "Metodo HTTP no permitido para esta ruta");
 
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
     }

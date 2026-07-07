@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Servicio encargado de la logica de estados de reserva.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -23,7 +26,6 @@ public class EstadoReservaService {
 
     public List<EstadoReservaDTO> findAll() {
         try {
-            // agregado: log para listar todos los estados de reserva
             log.info("Listando todos los estados de reserva");
 
             return estadoReservaRepository.findAll()
@@ -39,7 +41,6 @@ public class EstadoReservaService {
 
     public EstadoReservaDTO findById(Integer id) {
         try {
-            // agregado: log para buscar estado de reserva por id
             log.info("Buscando estado de reserva con id: {}", id);
 
             EstadoReserva estadoReserva = estadoReservaRepository.findById(id)
@@ -57,7 +58,6 @@ public class EstadoReservaService {
 
     public EstadoReservaDTO save(EstadoReservaRequestDTO requestDTO) {
         try {
-            // agregado: log para crear estado de reserva
             log.info("Creando nuevo estado de reserva");
 
             EstadoReserva estadoReserva = estadoReservaMapper.toEntity(requestDTO);
@@ -73,7 +73,6 @@ public class EstadoReservaService {
 
     public EstadoReservaDTO update(Integer id, EstadoReservaRequestDTO requestDTO) {
         try {
-            // agregado: actualización campo por campo para PUT
             log.info("Actualizando estado de reserva con id: {}", id);
 
             EstadoReserva estadoReserva = estadoReservaRepository.findById(id)
@@ -95,7 +94,6 @@ public class EstadoReservaService {
 
     public void delete(Integer id) {
         try {
-            // agregado: log para eliminar estado de reserva
             log.info("Eliminando estado de reserva con id: {}", id);
 
             EstadoReserva estadoReserva = estadoReservaRepository.findById(id)

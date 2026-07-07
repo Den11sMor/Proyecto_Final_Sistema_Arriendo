@@ -5,7 +5,13 @@ import com.duoc.msvehiculos.dto.VehiculoRequestDTO;
 import com.duoc.msvehiculos.model.Categoria;
 import com.duoc.msvehiculos.model.Vehiculo;
 
+/**
+ * Convierte entidades Vehiculo hacia DTO y desde DTO hacia entidad.
+ */
 public class VehiculoMapper {
+
+    private VehiculoMapper() {
+    }
 
     public static VehiculoDTO toDTO(Vehiculo vehiculo) {
         if (vehiculo == null) {
@@ -47,7 +53,6 @@ public class VehiculoMapper {
                 .build();
     }
 
-    // agregado: actualiza campo por campo para el PUT
     public static void updateEntity(Vehiculo vehiculo, VehiculoRequestDTO dto, Categoria categoria) {
         vehiculo.setPatente(dto.getPatente());
         vehiculo.setMarca(dto.getMarca());

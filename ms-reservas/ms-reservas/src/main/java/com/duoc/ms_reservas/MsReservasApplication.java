@@ -4,6 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
+/**
+ * Punto de entrada del microservicio de reservas.
+ */
 @EnableFeignClients
 @SpringBootApplication
 public class MsReservasApplication {
@@ -11,5 +14,4 @@ public class MsReservasApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MsReservasApplication.class, args);
 	}
-
 }

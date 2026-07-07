@@ -11,6 +11,10 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Centraliza el manejo de errores del microservicio de pagos
+ */
+@SuppressWarnings("unused")
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -33,29 +37,29 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
     }
 
-    // agregado: maneja rutas que no existen
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<Map<String, String>> manejarNoResourceFound(NoResourceFoundException ex) {
+    public ResponseEntity<Map<String, String>> manejarRutaNoEncontrada(NoResourceFoundException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("mensaje", "La ruta solicitada no existe");
+        error.put("mensaje", "Ruta no encontrada");
+        error.put("detalle", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    // agregado: maneja métodos HTTP incorrectos, por ejemplo POST donde era GET
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<Map<String, String>> manejarMetodoNoSoportado(HttpRequestMethodNotSupportedException ex) {
+    public ResponseEntity<Map<String, String>> manejarOperacionNoSoportada(HttpRequestMethodNotSupportedException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("mensaje", "Método HTTP no permitido para esta ruta");
+        error.put("mensaje", "Operacion HTTP no soportada");
+        error.put("detalle", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
     }
 
-    // agregado: error general controlado
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> manejarErrorGeneral(Exception ex) {
         Map<String, String> error = new HashMap<>();
         error.put("mensaje", "Error interno del servidor");
+        error.put("detalle", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }

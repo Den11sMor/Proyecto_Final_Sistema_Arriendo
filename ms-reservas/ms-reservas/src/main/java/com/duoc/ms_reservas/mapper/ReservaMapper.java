@@ -6,6 +6,9 @@ import com.duoc.ms_reservas.model.EstadoReserva;
 import com.duoc.ms_reservas.model.Reserva;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper encargado de convertir reservas entre entidad y DTO.
+ */
 @Component
 public class ReservaMapper {
 
@@ -46,7 +49,6 @@ public class ReservaMapper {
         return reserva;
     }
 
-    // agregado: método para actualizar campo por campo en el PUT
     public void updateEntity(Reserva reserva, ReservaRequestDTO requestDTO, EstadoReserva estadoReserva) {
         reserva.setClienteId(requestDTO.getClienteId());
         reserva.setVehiculoId(requestDTO.getVehiculoId());

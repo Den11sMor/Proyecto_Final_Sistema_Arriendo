@@ -4,6 +4,8 @@ import com.duoc.msempleados.assemblers.EmpleadoModelAssembler;
 import com.duoc.msempleados.dto.EmpleadoDTO;
 import com.duoc.msempleados.dto.EmpleadoRequestDTO;
 import com.duoc.msempleados.service.EmpleadoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -18,12 +20,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v2")
+@Tag(name = "Empleados V2", description = "Operaciones de empleados con respuestas HATEOAS")
 public class EmpleadoControllerV2 {
 
     private final EmpleadoService empleadoService;
     private final EmpleadoModelAssembler empleadoModelAssembler;
 
     @GetMapping("/empleados")
+    @Operation(summary = "Listar empleados con HATEOAS", description = "Retorna todos los empleados con enlaces relacionados")
     public ResponseEntity<CollectionModel<EntityModel<EmpleadoDTO>>> findAll() {
         List<EntityModel<EmpleadoDTO>> empleados = empleadoService.findAll()
                 .stream()
@@ -37,12 +41,14 @@ public class EmpleadoControllerV2 {
     }
 
     @GetMapping("/empleados/{id}")
+    @Operation(summary = "Buscar empleado por ID con HATEOAS", description = "Retorna un empleado con enlaces relacionados")
     public ResponseEntity<EntityModel<EmpleadoDTO>> findById(@PathVariable Integer id) {
         EmpleadoDTO empleado = empleadoService.findById(id);
         return ResponseEntity.ok(empleadoModelAssembler.toModel(empleado));
     }
 
     @PostMapping("/empleados")
+    @Operation(summary = "Crear empleado con HATEOAS", description = "Registra un nuevo empleado y retorna enlaces relacionados")
     public ResponseEntity<EntityModel<EmpleadoDTO>> save(@Valid @RequestBody EmpleadoRequestDTO request) {
         EmpleadoDTO empleadoCreado = empleadoService.save(request);
 
@@ -52,6 +58,7 @@ public class EmpleadoControllerV2 {
     }
 
     @PutMapping("/empleados/{id}")
+    @Operation(summary = "Actualizar empleado con HATEOAS", description = "Actualiza un empleado existente y retorna enlaces relacionados")
     public ResponseEntity<EntityModel<EmpleadoDTO>> update(@PathVariable Integer id,
                                                            @Valid @RequestBody EmpleadoRequestDTO request) {
         EmpleadoDTO empleadoActualizado = empleadoService.update(id, request);
@@ -59,12 +66,14 @@ public class EmpleadoControllerV2 {
     }
 
     @DeleteMapping("/empleados/{id}")
+    @Operation(summary = "Eliminar empleado", description = "Elimina un empleado segun su identificador")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         empleadoService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/activos/anio/{anio}")
+    @Operation(summary = "Listar empleados activos por anio con HATEOAS", description = "Retorna empleados activos ingresados en un anio especifico")
     public ResponseEntity<CollectionModel<EntityModel<EmpleadoDTO>>> listarActivosPorAnio(@PathVariable Integer anio) {
         List<EntityModel<EmpleadoDTO>> empleados = empleadoService.listarActivosPorAnio(anio)
                 .stream()

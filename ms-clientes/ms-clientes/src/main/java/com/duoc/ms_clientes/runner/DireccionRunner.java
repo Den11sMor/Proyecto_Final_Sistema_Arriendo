@@ -1,6 +1,5 @@
 package com.duoc.ms_clientes.runner;
 
-
 import com.duoc.ms_clientes.model.Cliente;
 import com.duoc.ms_clientes.model.Direccion;
 import com.duoc.ms_clientes.repository.ClienteRepository;
@@ -12,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+/**
+ * Carga datos iniciales de direcciones cuando la tabla esta vacia.
+ */
 @Component
 @RequiredArgsConstructor
 @Order(2)
@@ -23,14 +25,13 @@ public class DireccionRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (direccionRepository.count() == 0) {
-
-            Cliente cliente1 = clienteRepository.findByEmail("juan.perez@gmail.com") // CAMBIO: se busca por email
+            Cliente cliente1 = clienteRepository.findByEmail("juan.perez@gmail.com")
                     .orElseThrow(() -> new RuntimeException("Cliente Juan no encontrado"));
 
-            Cliente cliente2 = clienteRepository.findByEmail("maria.gonzalez@gmail.com") // CAMBIO: se busca por email
+            Cliente cliente2 = clienteRepository.findByEmail("maria.gonzalez@gmail.com")
                     .orElseThrow(() -> new RuntimeException("Cliente Maria no encontrado"));
 
-            Cliente cliente3 = clienteRepository.findByEmail("pedro.soto@hotmail.com") // CAMBIO: se busca por email
+            Cliente cliente3 = clienteRepository.findByEmail("pedro.soto@hotmail.com")
                     .orElseThrow(() -> new RuntimeException("Cliente Pedro no encontrado"));
 
             Direccion direccion1 = new Direccion();

@@ -4,6 +4,8 @@ import com.duoc.mssucursales.assemblers.SucursalModelAssembler;
 import com.duoc.mssucursales.dto.SucursalDTO;
 import com.duoc.mssucursales.dto.SucursalRequestDTO;
 import com.duoc.mssucursales.service.SucursalService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -17,13 +19,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v2")
+@RequestMapping("/api/v2/sucursales")
+@Tag(name = "Sucursales V2", description = "Operaciones de sucursales con HATEOAS")
 public class SucursalControllerV2 {
 
     private final SucursalService sucursalService;
     private final SucursalModelAssembler sucursalModelAssembler;
 
-    @GetMapping("/sucursales")
+    @GetMapping
+    @Operation(summary = "Listar sucursales con HATEOAS")
     public ResponseEntity<CollectionModel<EntityModel<SucursalDTO>>> findAll() {
         List<EntityModel<SucursalDTO>> sucursales = sucursalService.findAll()
                 .stream()
@@ -36,13 +40,15 @@ public class SucursalControllerV2 {
         ));
     }
 
-    @GetMapping("/sucursales/{id}")
+    @GetMapping("/{id}")
+    @Operation(summary = "Buscar sucursal por ID con HATEOAS")
     public ResponseEntity<EntityModel<SucursalDTO>> findById(@PathVariable Integer id) {
         SucursalDTO sucursal = sucursalService.findById(id);
         return ResponseEntity.ok(sucursalModelAssembler.toModel(sucursal));
     }
 
-    @PostMapping("/sucursales")
+    @PostMapping
+    @Operation(summary = "Crear sucursal con HATEOAS")
     public ResponseEntity<EntityModel<SucursalDTO>> save(@Valid @RequestBody SucursalRequestDTO requestDTO) {
         SucursalDTO sucursalCreada = sucursalService.save(requestDTO);
 
@@ -51,20 +57,23 @@ public class SucursalControllerV2 {
                 .body(sucursalModelAssembler.toModel(sucursalCreada));
     }
 
-    @PutMapping("/sucursales/{id}")
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar sucursal con HATEOAS")
     public ResponseEntity<EntityModel<SucursalDTO>> update(@PathVariable Integer id,
                                                            @Valid @RequestBody SucursalRequestDTO requestDTO) {
         SucursalDTO sucursalActualizada = sucursalService.update(id, requestDTO);
         return ResponseEntity.ok(sucursalModelAssembler.toModel(sucursalActualizada));
     }
 
-    @DeleteMapping("/sucursales/{id}")
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar sucursal")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         sucursalService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/sucursales/operativas")
+    @GetMapping("/operativas")
+    @Operation(summary = "Listar sucursales operativas con HATEOAS")
     public ResponseEntity<CollectionModel<EntityModel<SucursalDTO>>> listarOperativasOrdenadas() {
         List<EntityModel<SucursalDTO>> sucursales = sucursalService.listarOperativasOrdenadas()
                 .stream()

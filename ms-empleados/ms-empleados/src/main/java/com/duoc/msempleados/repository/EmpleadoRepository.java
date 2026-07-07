@@ -7,8 +7,13 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
+/**
+ * Repositorio para acceder a los datos de empleados
+ */
 public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
-
+    /**
+     * Lista empleados activos filtrados por ano de ingreso
+     */
     @Query(value = "SELECT * FROM empleados WHERE activo = true AND YEAR(fecha_ingreso) = :anio", nativeQuery = true)
-    List<Empleado>listarEmpleadosActivosPorAnio(@Param("anio") Integer anio);
+    List<Empleado> listarEmpleadosActivosPorAnio(@Param("anio") Integer anio);
 }

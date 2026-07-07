@@ -8,29 +8,24 @@ import com.duoc.mssucursales.model.Region;
 import com.duoc.mssucursales.model.Sucursal;
 import com.duoc.mssucursales.repository.RegionRepository;
 import com.duoc.mssucursales.repository.SucursalRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Contiene la logica de negocio para sucursales
+ */
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class SucursalService {
-
-    private static final Logger log = LoggerFactory.getLogger(SucursalService.class);
 
     private final SucursalRepository sucursalRepository;
     private final RegionRepository regionRepository;
     private final SucursalMapper sucursalMapper;
-
-    public SucursalService(SucursalRepository sucursalRepository,
-                           RegionRepository regionRepository,
-                           SucursalMapper sucursalMapper) {
-        this.sucursalRepository = sucursalRepository;
-        this.regionRepository = regionRepository;
-        this.sucursalMapper = sucursalMapper;
-    }
 
     public List<SucursalDTO> findAll() {
         try {
@@ -70,7 +65,7 @@ public class SucursalService {
             log.info("Guardando nueva sucursal");
 
             Region region = regionRepository.findById(requestDTO.getRegionId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Región no encontrada con id: " + requestDTO.getRegionId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Region no encontrada con id: " + requestDTO.getRegionId()));
 
             Sucursal sucursal = sucursalMapper.toEntity(requestDTO, region);
             Sucursal sucursalGuardada = sucursalRepository.save(sucursal);
@@ -78,7 +73,7 @@ public class SucursalService {
             return sucursalMapper.toDTO(sucursalGuardada);
 
         } catch (ResourceNotFoundException e) {
-            log.error("Región no encontrada al guardar sucursal");
+            log.error("Region no encontrada al guardar sucursal");
             throw e;
         } catch (Exception e) {
             log.error("Error al guardar sucursal", e);
@@ -94,7 +89,7 @@ public class SucursalService {
                     .orElseThrow(() -> new ResourceNotFoundException("Sucursal no encontrada con id: " + id));
 
             Region region = regionRepository.findById(requestDTO.getRegionId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Región no encontrada con id: " + requestDTO.getRegionId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Region no encontrada con id: " + requestDTO.getRegionId()));
 
             sucursalMapper.updateEntity(sucursal, requestDTO, region);
 
@@ -144,5 +139,3 @@ public class SucursalService {
         }
     }
 }
-
-

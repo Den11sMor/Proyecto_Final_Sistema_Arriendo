@@ -4,6 +4,10 @@ import com.duoc.msvehiculos.dto.VehiculoDTO;
 import com.duoc.msvehiculos.dto.VehiculoRequestDTO;
 import com.duoc.msvehiculos.service.VehiculoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,59 +16,77 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+/**
+ * Controlador REST V1 para gestionar vehiculos.
+ */
 @RestController
 @RequestMapping("/api/v1/vehiculos")
 @RequiredArgsConstructor
-@Tag(name = "Vehículos", description = "Operaciones CRUD y consulta de disponibilidad de vehículos")
+@Tag(name = "Vehiculos V1", description = "Operaciones CRUD y consulta de disponibilidad de vehiculos")
 public class VehiculoController {
 
     private final VehiculoService vehiculoService;
 
     @GetMapping
-    @Operation(summary = "Listar vehículos")
-    public ResponseEntity<?> findAll() {
+    @Operation(summary = "Listar vehiculos", description = "Obtiene todos los vehiculos registrados")
+    @ApiResponse(responseCode = "200", description = "Vehiculos encontrados")
+    public ResponseEntity<List<VehiculoDTO>> findAll() {
         return ResponseEntity.ok(vehiculoService.findAll());
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Buscar vehículo por ID")
+    @Operation(summary = "Buscar vehiculo por ID", description = "Obtiene un vehiculo segun su identificador")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vehiculo encontrado",
+                    content = @Content(schema = @Schema(implementation = VehiculoDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Vehiculo no encontrado", content = @Content)
+    })
     public ResponseEntity<VehiculoDTO> findById(@PathVariable Integer id) {
         return ResponseEntity.ok(vehiculoService.findById(id));
     }
 
     @PostMapping
-    @Operation(summary = "Crear vehículo")
+    @Operation(summary = "Crear vehiculo", description = "Registra un nuevo vehiculo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Vehiculo creado",
+                    content = @Content(schema = @Schema(implementation = VehiculoDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Datos invalidos", content = @Content)
+    })
     public ResponseEntity<VehiculoDTO> save(@Valid @RequestBody VehiculoRequestDTO dto) {
         VehiculoDTO vehiculoCreado = vehiculoService.save(dto);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(vehiculoCreado);
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar vehículo")
-    public ResponseEntity<VehiculoDTO> update(
-            @PathVariable Integer id,
-            @Valid @RequestBody VehiculoRequestDTO dto
-    ) {
+    @Operation(summary = "Actualizar vehiculo", description = "Actualiza un vehiculo existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vehiculo actualizado",
+                    content = @Content(schema = @Schema(implementation = VehiculoDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Vehiculo no encontrado", content = @Content)
+    })
+    public ResponseEntity<VehiculoDTO> update(@PathVariable Integer id,
+                                              @Valid @RequestBody VehiculoRequestDTO dto) {
         VehiculoDTO vehiculoActualizado = vehiculoService.update(id, dto);
-
         return ResponseEntity.ok(vehiculoActualizado);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar vehículo")
+    @Operation(summary = "Eliminar vehiculo", description = "Elimina un vehiculo por su identificador")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Vehiculo eliminado"),
+            @ApiResponse(responseCode = "404", description = "Vehiculo no encontrado", content = @Content)
+    })
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         vehiculoService.delete(id);
-
         return ResponseEntity.noContent().build();
     }
 
-    // agregado: endpoint para la query method requerida
-    // ejemplo: GET http://localhost:8082/api/v1/vehiculos/disponibles/precio-menor/50000
     @GetMapping("/disponibles/precio-menor/{precioMaximo}")
-    @Operation(summary = "Buscar vehículos disponibles bajo un precio máximo")
-    public ResponseEntity<?> buscarDisponiblesPorPrecioMenor(@PathVariable BigDecimal precioMaximo) {
+    @Operation(summary = "Buscar vehiculos disponibles por precio", description = "Lista vehiculos disponibles con precio diario menor al valor indicado")
+    @ApiResponse(responseCode = "200", description = "Vehiculos disponibles encontrados")
+    public ResponseEntity<List<VehiculoDTO>> buscarDisponiblesPorPrecioMenor(@PathVariable BigDecimal precioMaximo) {
         return ResponseEntity.ok(vehiculoService.buscarDisponiblesPorPrecioMenor(precioMaximo));
     }
 }

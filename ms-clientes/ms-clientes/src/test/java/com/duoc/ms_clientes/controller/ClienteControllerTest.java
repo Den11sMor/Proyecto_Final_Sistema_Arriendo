@@ -6,6 +6,7 @@ import com.duoc.ms_clientes.exception.GlobalExceptionHandler;
 import com.duoc.ms_clientes.service.ClienteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -56,7 +57,8 @@ class ClienteControllerTest {
     }
 
     @Test
-    void testFindAll() throws Exception {
+    @DisplayName("Debe listar clientes desde la ruta V1")
+    void findAll_ReturnsOk() throws Exception {
         when(clienteService.findAll()).thenReturn(List.of(clienteDTO));
 
         mockMvc.perform(get("/api/v1/clientes"))
@@ -67,7 +69,8 @@ class ClienteControllerTest {
     }
 
     @Test
-    void testFindById() throws Exception {
+    @DisplayName("Debe buscar un cliente por ID desde la ruta V1")
+    void findById_ReturnsOk() throws Exception {
         when(clienteService.findById(1)).thenReturn(clienteDTO);
 
         mockMvc.perform(get("/api/v1/clientes/1"))
@@ -79,7 +82,8 @@ class ClienteControllerTest {
     }
 
     @Test
-    void testSave() throws Exception {
+    @DisplayName("Debe crear un cliente desde la ruta V1")
+    void save_ReturnsCreated() throws Exception {
         when(clienteService.save(any(ClienteRequestDTO.class))).thenReturn(clienteDTO);
 
         mockMvc.perform(post("/api/v1/clientes")
@@ -92,7 +96,8 @@ class ClienteControllerTest {
     }
 
     @Test
-    void testUpdate() throws Exception {
+    @DisplayName("Debe actualizar un cliente desde la ruta V1")
+    void update_ReturnsOk() throws Exception {
         when(clienteService.update(eq(1), any(ClienteRequestDTO.class))).thenReturn(clienteDTO);
 
         mockMvc.perform(put("/api/v1/clientes/1")
@@ -105,7 +110,8 @@ class ClienteControllerTest {
     }
 
     @Test
-    void testDelete() throws Exception {
+    @DisplayName("Debe eliminar un cliente desde la ruta V1")
+    void delete_ReturnsNoContent() throws Exception {
         doNothing().when(clienteService).delete(1);
 
         mockMvc.perform(delete("/api/v1/clientes/1"))
@@ -115,7 +121,8 @@ class ClienteControllerTest {
     }
 
     @Test
-    void testBuscarPorEmail() throws Exception {
+    @DisplayName("Debe buscar clientes por email desde la ruta V1")
+    void buscarPorEmail_ReturnsOk() throws Exception {
         when(clienteService.buscarPorEmail("gmail")).thenReturn(List.of(clienteDTO));
 
         mockMvc.perform(get("/api/v1/clientes/buscar-email").param("texto", "gmail"))

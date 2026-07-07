@@ -18,14 +18,14 @@ import java.time.LocalDateTime;
 @Schema(description = "Datos necesarios para crear o actualizar un estado de reserva")
 public class EstadoReservaRequestDTO {
 
-    @Schema(description = "Nombre del estado", example = "Pendiente", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "El nombre del estado es obligatorio")
     @Size(min = 2, max = 50, message = "El nombre debe tener entre 2 y 50 caracteres")
+    @Schema(description = "Nombre del estado", example = "Pendiente", requiredMode = Schema.RequiredMode.REQUIRED)
     private String nombre;
 
-    @NotBlank(message = "La descripción es obligatoria")
-    @Size(min = 5, max = 150, message = "La descripción debe tener entre 5 y 150 caracteres")
-    @Schema(description = "Descripción del estado", example = "En espera de confirmación", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "La descripcion es obligatoria")
+    @Size(min = 5, max = 150, message = "La descripcion debe tener entre 5 y 150 caracteres")
+    @Schema(description = "Descripcion del estado", example = "En espera de confirmacion", requiredMode = Schema.RequiredMode.REQUIRED)
     private String descripcion;
 
     @NotNull(message = "La prioridad es obligatoria")
@@ -34,12 +34,11 @@ public class EstadoReservaRequestDTO {
     private Integer prioridad;
 
     @NotNull(message = "El estado activo es obligatorio")
-    @Schema(description = "Indica si el estado está activo", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Indica si el estado esta activo", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean activo;
 
-    @NotNull(message = "La fecha de creación es obligatoria")
-    @PastOrPresent(message = "La fecha de creación no puede ser futura")
-    @Schema(description = "Fecha de creación", example = "2026-06-01T10:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "La fecha de creacion es obligatoria")
+    @PastOrPresent(message = "La fecha de creacion no puede ser futura")
+    @Schema(description = "Fecha de creacion", example = "2026-06-01T10:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime fechaCreacion;
-
 }

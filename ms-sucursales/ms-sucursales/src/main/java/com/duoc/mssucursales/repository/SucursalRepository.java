@@ -7,11 +7,15 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repositorio para acceder a los datos de sucursales
+ */
 @Repository
 public interface SucursalRepository extends JpaRepository<Sucursal, Integer> {
 
-    // Native Query pedida por la prueba: sucursales operativas ordenadas por nombre
+    /**
+     * Lista sucursales operativas ordenadas por nombre
+     */
     @Query(value = "SELECT * FROM sucursales WHERE operativa = true ORDER BY nombre ASC", nativeQuery = true)
     List<Sucursal> listarSucursalesOperativasOrdenadas();
-
 }

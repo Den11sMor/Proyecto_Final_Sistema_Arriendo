@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Servicio encargado de la logica de clientes.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -20,7 +23,7 @@ public class ClienteService {
     private final ClienteRepository clienteRepository;
     private final ClienteMapper clienteMapper;
 
-    public List<ClienteDTO> findAll(){
+    public List<ClienteDTO> findAll() {
         log.info("Listando todos los clientes");
 
         try {
@@ -34,12 +37,13 @@ public class ClienteService {
         }
     }
 
-    public ClienteDTO findById(Integer id){
+    public ClienteDTO findById(Integer id) {
         log.info("Buscando cliente por id: {}", id);
 
         try {
             Cliente cliente = clienteRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: "+ id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + id));
+
             return clienteMapper.toDTO(cliente);
         } catch (Exception e) {
             log.error("Error al buscar cliente con id: {}", id, e);
@@ -47,7 +51,7 @@ public class ClienteService {
         }
     }
 
-    public ClienteDTO save(ClienteRequestDTO request){
+    public ClienteDTO save(ClienteRequestDTO request) {
         log.info("Guardando nuevo cliente");
 
         try {
@@ -59,15 +63,14 @@ public class ClienteService {
             log.error("Error al guardar cliente", e);
             throw e;
         }
-
     }
 
-    public ClienteDTO update(Integer id, ClienteRequestDTO request){
+    public ClienteDTO update(Integer id, ClienteRequestDTO request) {
         log.info("Actualizando cliente con id: {}", id);
 
         try {
             Cliente cliente = clienteRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: "+ id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + id));
 
             cliente.setRut(request.getRut());
             cliente.setNombre(request.getNombre());
@@ -86,12 +89,12 @@ public class ClienteService {
         }
     }
 
-    public void delete(Integer id){
+    public void delete(Integer id) {
         log.info("Eliminando cliente por id: {}", id);
 
         try {
             Cliente cliente = clienteRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: "+ id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + id));
 
             clienteRepository.delete(cliente);
         } catch (Exception e) {
@@ -100,11 +103,11 @@ public class ClienteService {
         }
     }
 
-    public List<ClienteDTO> buscarPorEmail(String texto){
+    public List<ClienteDTO> buscarPorEmail(String texto) {
         log.info("Buscando clientes cuyo email contenga: {}", texto);
 
         try {
-            return  clienteRepository.findByEmailContainingIgnoreCase(texto)
+            return clienteRepository.findByEmailContainingIgnoreCase(texto)
                     .stream()
                     .map(clienteMapper::toDTO)
                     .toList();
@@ -113,5 +116,4 @@ public class ClienteService {
             throw e;
         }
     }
-
 }
