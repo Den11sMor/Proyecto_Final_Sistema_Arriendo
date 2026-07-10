@@ -51,15 +51,37 @@ public class DataLoader implements CommandLineRunner {
                     .fechaCreacion(LocalDate.now())
                     .build();
 
+            Categoria categoriaCarga = Categoria.builder()
+                    .nombre("Carga")
+                    .descripcion("Vehiculos para traslado de carga liviana")
+                    .tarifaBase(new BigDecimal("55000"))
+                    .capacidadPasajeros(2)
+                    .activa(true)
+                    .fechaCreacion(LocalDate.now())
+                    .build();
+
+            Categoria categoriaVan = Categoria.builder()
+                    .nombre("Van")
+                    .descripcion("Vehiculos para grupos grandes de pasajeros")
+                    .tarifaBase(new BigDecimal("65000"))
+                    .capacidadPasajeros(8)
+                    .activa(true)
+                    .fechaCreacion(LocalDate.now())
+                    .build();
+
             categoriaRepository.save(categoriaEconomico);
             categoriaRepository.save(categoriaSuv);
             categoriaRepository.save(categoriaPremium);
+            categoriaRepository.save(categoriaCarga);
+            categoriaRepository.save(categoriaVan);
         }
 
         if (vehiculoRepository.count() == 0) {
             Categoria economico = categoriaRepository.findAll().get(0);
             Categoria suv = categoriaRepository.findAll().get(1);
             Categoria premium = categoriaRepository.findAll().get(2);
+            Categoria carga = categoriaRepository.findAll().get(3);
+            Categoria van = categoriaRepository.findAll().get(4);
 
             Vehiculo vehiculo1 = Vehiculo.builder()
                     .patente("ABCD12")
@@ -100,9 +122,37 @@ public class DataLoader implements CommandLineRunner {
                     .categoria(premium)
                     .build();
 
+            Vehiculo vehiculo4 = Vehiculo.builder()
+                    .patente("MNOP78")
+                    .marca("Peugeot")
+                    .modelo("Partner")
+                    .anio(2020)
+                    .color("Blanco")
+                    .precioArriendoDiario(new BigDecimal("58000"))
+                    .kilometraje(41000)
+                    .disponible(true)
+                    .fechaIngreso(LocalDate.now())
+                    .categoria(carga)
+                    .build();
+
+            Vehiculo vehiculo5 = Vehiculo.builder()
+                    .patente("QRST90")
+                    .marca("Kia")
+                    .modelo("Carnival")
+                    .anio(2023)
+                    .color("Azul")
+                    .precioArriendoDiario(new BigDecimal("68000"))
+                    .kilometraje(15000)
+                    .disponible(true)
+                    .fechaIngreso(LocalDate.now())
+                    .categoria(van)
+                    .build();
+
             vehiculoRepository.save(vehiculo1);
             vehiculoRepository.save(vehiculo2);
             vehiculoRepository.save(vehiculo3);
+            vehiculoRepository.save(vehiculo4);
+            vehiculoRepository.save(vehiculo5);
         }
     }
 }

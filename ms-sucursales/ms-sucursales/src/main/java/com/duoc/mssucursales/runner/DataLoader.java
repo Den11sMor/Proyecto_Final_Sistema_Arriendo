@@ -51,9 +51,27 @@ public class DataLoader implements CommandLineRunner {
             regionBiobio.setActiva(true);
             regionBiobio.setFechaCreacion(LocalDate.now());
 
+            Region regionCoquimbo = new Region();
+            regionCoquimbo.setNombre("Region de Coquimbo");
+            regionCoquimbo.setCodigo("IV");
+            regionCoquimbo.setNumeroRegion(4);
+            regionCoquimbo.setCapitalRegional("La Serena");
+            regionCoquimbo.setActiva(true);
+            regionCoquimbo.setFechaCreacion(LocalDate.now());
+
+            Region regionAraucania = new Region();
+            regionAraucania.setNombre("Region de La Araucania");
+            regionAraucania.setCodigo("IX");
+            regionAraucania.setNumeroRegion(9);
+            regionAraucania.setCapitalRegional("Temuco");
+            regionAraucania.setActiva(true);
+            regionAraucania.setFechaCreacion(LocalDate.now());
+
             regionRepository.save(regionMetropolitana);
             regionRepository.save(regionValparaiso);
             regionRepository.save(regionBiobio);
+            regionRepository.save(regionCoquimbo);
+            regionRepository.save(regionAraucania);
 
             Sucursal sucursalSantiago = new Sucursal();
             sucursalSantiago.setNombre("Sucursal Santiago Centro");
@@ -82,9 +100,29 @@ public class DataLoader implements CommandLineRunner {
             sucursalConcepcion.setFechaApertura(LocalDate.of(2024, 7, 20));
             sucursalConcepcion.setRegion(regionBiobio);
 
+            Sucursal sucursalLaSerena = new Sucursal();
+            sucursalLaSerena.setNombre("Sucursal La Serena");
+            sucursalLaSerena.setDireccion("Av. Francisco de Aguirre 321");
+            sucursalLaSerena.setComuna("La Serena");
+            sucursalLaSerena.setTelefono(512345678);
+            sucursalLaSerena.setOperativa(true);
+            sucursalLaSerena.setFechaApertura(LocalDate.of(2024, 8, 12));
+            sucursalLaSerena.setRegion(regionCoquimbo);
+
+            Sucursal sucursalTemuco = new Sucursal();
+            sucursalTemuco.setNombre("Sucursal Temuco");
+            sucursalTemuco.setDireccion("Av. Alemania 654");
+            sucursalTemuco.setComuna("Temuco");
+            sucursalTemuco.setTelefono(452345678);
+            sucursalTemuco.setOperativa(true);
+            sucursalTemuco.setFechaApertura(LocalDate.of(2024, 9, 5));
+            sucursalTemuco.setRegion(regionAraucania);
+
             sucursalRepository.save(sucursalSantiago);
             sucursalRepository.save(sucursalValparaiso);
             sucursalRepository.save(sucursalConcepcion);
+            sucursalRepository.save(sucursalLaSerena);
+            sucursalRepository.save(sucursalTemuco);
 
             log.info("Datos iniciales de regiones y sucursales cargados correctamente");
         } else {

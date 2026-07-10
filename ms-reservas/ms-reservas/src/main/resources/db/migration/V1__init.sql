@@ -1,4 +1,3 @@
--- agregado: creación de tabla estado_reserva
 CREATE TABLE estado_reserva (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
@@ -8,7 +7,6 @@ CREATE TABLE estado_reserva (
     fecha_creacion DATETIME NOT NULL
 );
 
--- agregado: creación de tabla reserva
 CREATE TABLE reserva (
     id INT AUTO_INCREMENT PRIMARY KEY,
     cliente_id INT NOT NULL,

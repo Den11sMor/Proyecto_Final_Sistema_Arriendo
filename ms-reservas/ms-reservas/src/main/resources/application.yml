@@ -2,4 +2,4 @@
   application:
     name: ms-reservas
   profiles:
-    active: dev
+    active: ${SPRING_PROFILES_ACTIVE:dev}

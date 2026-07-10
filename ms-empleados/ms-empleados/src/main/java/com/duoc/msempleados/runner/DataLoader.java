@@ -22,7 +22,7 @@ public class DataLoader implements CommandLineRunner {
 
         if (empleadoRepository.count() == 0) {
 
-            log.info("Cargando datos iniciales de empleados"); // agregado: log del runner
+            log.info("Cargando datos iniciales de empleados");
 
             Empleado empleado1 = new Empleado();
             empleado1.setRut("12345678-9");
@@ -51,14 +51,34 @@ public class DataLoader implements CommandLineRunner {
             empleado3.setActivo(false);
             empleado3.setFechaIngreso(LocalDate.of(2023, 9, 20));
 
+            Empleado empleado4 = new Empleado();
+            empleado4.setRut("15432109-8");
+            empleado4.setNombre("Ana Torres");
+            empleado4.setCargo("Supervisora de operaciones");
+            empleado4.setEmail("ana.torres@empresa.cl");
+            empleado4.setSueldo(new BigDecimal("880000"));
+            empleado4.setActivo(true);
+            empleado4.setFechaIngreso(LocalDate.of(2025, 1, 12));
+
+            Empleado empleado5 = new Empleado();
+            empleado5.setRut("19876543-2");
+            empleado5.setNombre("Luis Herrera");
+            empleado5.setCargo("Tecnico de mantencion");
+            empleado5.setEmail("luis.herrera@empresa.cl");
+            empleado5.setSueldo(new BigDecimal("680000"));
+            empleado5.setActivo(true);
+            empleado5.setFechaIngreso(LocalDate.of(2025, 4, 5));
+
             empleadoRepository.save(empleado1);
             empleadoRepository.save(empleado2);
             empleadoRepository.save(empleado3);
+            empleadoRepository.save(empleado4);
+            empleadoRepository.save(empleado5);
 
-            log.info("Datos iniciales de empleados cargados correctamente"); // agregado: log del runner
+            log.info("Datos iniciales de empleados cargados correctamente");
 
         } else {
-            log.info("Ya existen empleados registrados, no se cargan datos iniciales"); // agregado: log del runner
+            log.info("Ya existen empleados registrados, no se cargan datos iniciales");
         }
     }
 }

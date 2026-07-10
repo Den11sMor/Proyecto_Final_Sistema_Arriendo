@@ -2,6 +2,7 @@ package com.duoc.ms_clientes.controller;
 
 import com.duoc.ms_clientes.dto.DireccionDTO;
 import com.duoc.ms_clientes.dto.DireccionRequestDTO;
+import com.duoc.ms_clientes.exception.ErrorResponse;
 import com.duoc.ms_clientes.service.DireccionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -43,6 +46,7 @@ public class DireccionController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     public ResponseEntity<List<DireccionDTO>> findAll() {
+        log.info("Solicitud para listar direcciones");
         return ResponseEntity.ok(direccionService.findAll());
     }
 
@@ -62,13 +66,23 @@ public class DireccionController {
                     description = "Direccion no encontrada",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(value = "{\"mensaje\":\"Direccion no encontrada con id: 99\"}")
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "timestamp": "2026-07-07T10:30:00",
+                                      "status": 404,
+                                      "error": "Not Found",
+                                      "message": "Direccion no encontrada con id: 99",
+                                      "path": "/api/v1/direcciones/99"
+                                    }
+                                    """)
                     )
             )
     })
     public ResponseEntity<DireccionDTO> findById(
             @Parameter(description = "ID de la direccion", example = "1", required = true)
             @PathVariable Integer id) {
+        log.info("Solicitud para buscar direccion por id: {}", id);
         return ResponseEntity.ok(direccionService.findById(id));
     }
 
@@ -105,6 +119,7 @@ public class DireccionController {
                     )
             )
             @Valid @RequestBody DireccionRequestDTO request) {
+        log.info("Solicitud para crear direccion");
         DireccionDTO direccionCreada = direccionService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(direccionCreada);
     }
@@ -121,6 +136,7 @@ public class DireccionController {
             @Parameter(description = "ID de la direccion", example = "1", required = true)
             @PathVariable Integer id,
             @Valid @RequestBody DireccionRequestDTO request) {
+        log.info("Solicitud para actualizar direccion con id: {}", id);
         DireccionDTO direccionActualizada = direccionService.update(id, request);
         return ResponseEntity.ok(direccionActualizada);
     }
@@ -135,6 +151,7 @@ public class DireccionController {
     public ResponseEntity<Void> delete(
             @Parameter(description = "ID de la direccion", example = "1", required = true)
             @PathVariable Integer id) {
+        log.info("Solicitud para eliminar direccion con id: {}", id);
         direccionService.delete(id);
         return ResponseEntity.noContent().build();
     }

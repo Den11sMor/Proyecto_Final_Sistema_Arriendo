@@ -1,5 +1,6 @@
 package com.duoc.msempleados.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,11 +21,9 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, String>> manejarResourceNotFound(ResourceNotFoundException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("mensaje", ex.getMessage());
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    public ResponseEntity<ErrorResponse> manejarResourceNotFound(ResourceNotFoundException ex,
+                                                                 HttpServletRequest request) {
+        return crearRespuestaError(HttpStatus.NOT_FOUND, ex.getMessage(), request.getRequestURI());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -38,29 +38,32 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<Map<String, String>> manejarRutaNoEncontrada(NoResourceFoundException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("mensaje", "Ruta no encontrada");
-        error.put("detalle", ex.getMessage());
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    public ResponseEntity<ErrorResponse> manejarRutaNoEncontrada(NoResourceFoundException ex,
+                                                                 HttpServletRequest request) {
+        return crearRespuestaError(HttpStatus.NOT_FOUND, "Ruta no encontrada", request.getRequestURI());
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<Map<String, String>> manejarMetodoNoSoportado(HttpRequestMethodNotSupportedException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("mensaje", "Operacion HTTP no soportada");
-        error.put("detalle", ex.getMessage());
-
-        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
+    public ResponseEntity<ErrorResponse> manejarMetodoNoSoportado(HttpRequestMethodNotSupportedException ex,
+                                                                  HttpServletRequest request) {
+        return crearRespuestaError(HttpStatus.METHOD_NOT_ALLOWED, "Operacion HTTP no soportada", request.getRequestURI());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> manejarErroresGenerales(Exception ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("mensaje", "Error interno del servidor");
-        error.put("detalle", ex.getMessage());
+    public ResponseEntity<ErrorResponse> manejarErroresGenerales(Exception ex,
+                                                                HttpServletRequest request) {
+        return crearRespuestaError(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor", request.getRequestURI());
+    }
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    private ResponseEntity<ErrorResponse> crearRespuestaError(HttpStatus estado, String mensaje, String ruta) {
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                estado.value(),
+                estado.getReasonPhrase(),
+                mensaje,
+                ruta
+        );
+
+        return ResponseEntity.status(estado).body(error);
     }
 }

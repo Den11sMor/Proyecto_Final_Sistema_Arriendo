@@ -93,6 +93,66 @@ databaseChangeLog:
               - column:
                   name: pago_confirmado
                   valueBoolean: true
+        - insert:
+            tableName: reportes
+            columns:
+              - column:
+                  name: reserva_id
+                  valueNumeric: 4
+              - column:
+                  name: pago_id
+                  valueNumeric: 4
+              - column:
+                  name: tipo_reporte
+                  value: "RESUMEN_PAGO"
+              - column:
+                  name: fecha_generacion
+                  valueDate: "2025-05-07"
+              - column:
+                  name: descripcion
+                  value: "Reporte de pago aprobado"
+              - column:
+                  name: total_reserva
+                  valueNumeric: 98000.00
+              - column:
+                  name: monto_pagado
+                  valueNumeric: 98000.00
+              - column:
+                  name: reserva_activa
+                  valueBoolean: true
+              - column:
+                  name: pago_confirmado
+                  valueBoolean: true
+        - insert:
+            tableName: reportes
+            columns:
+              - column:
+                  name: reserva_id
+                  valueNumeric: 5
+              - column:
+                  name: pago_id
+                  valueNumeric: 5
+              - column:
+                  name: tipo_reporte
+                  value: "CONTROL_PAGO"
+              - column:
+                  name: fecha_generacion
+                  valueDate: "2025-05-09"
+              - column:
+                  name: descripcion
+                  value: "Reporte de pago validado"
+              - column:
+                  name: total_reserva
+                  valueNumeric: 64000.00
+              - column:
+                  name: monto_pagado
+                  valueNumeric: 64000.00
+              - column:
+                  name: reserva_activa
+                  valueBoolean: true
+              - column:
+                  name: pago_confirmado
+                  valueBoolean: true
       rollback:
         - delete:
             tableName: reportes

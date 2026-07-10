@@ -34,8 +34,14 @@ public class DireccionRunner implements CommandLineRunner {
             Cliente cliente3 = clienteRepository.findByEmail("pedro.soto@hotmail.com")
                     .orElseThrow(() -> new RuntimeException("Cliente Pedro no encontrado"));
 
+            Cliente cliente4 = clienteRepository.findByEmail("ana.rojas@gmail.com")
+                    .orElseThrow(() -> new RuntimeException("Cliente Ana no encontrado"));
+
+            Cliente cliente5 = clienteRepository.findByEmail("luis.torres@gmail.com")
+                    .orElseThrow(() -> new RuntimeException("Cliente Luis no encontrado"));
+
             Direccion direccion1 = new Direccion();
-            direccion1.setCalle("Av. Providencia");
+            direccion1.setCalle("Av Providencia");
             direccion1.setNumero(123);
             direccion1.setComuna("Providencia");
             direccion1.setCiudad("Santiago");
@@ -45,7 +51,7 @@ public class DireccionRunner implements CommandLineRunner {
             direccion1.setCliente(cliente1);
 
             Direccion direccion2 = new Direccion();
-            direccion2.setCalle("Av. Grecia");
+            direccion2.setCalle("Av Grecia");
             direccion2.setNumero(456);
             direccion2.setComuna("Nunoa");
             direccion2.setCiudad("Santiago");
@@ -64,9 +70,31 @@ public class DireccionRunner implements CommandLineRunner {
             direccion3.setFechaRegistro(LocalDate.now());
             direccion3.setCliente(cliente3);
 
+            Direccion direccion4 = new Direccion();
+            direccion4.setCalle("Av Las Condes");
+            direccion4.setNumero(1450);
+            direccion4.setComuna("Las Condes");
+            direccion4.setCiudad("Santiago");
+            direccion4.setReferencia("Edificio principal");
+            direccion4.setPrincipal(true);
+            direccion4.setFechaRegistro(LocalDate.now());
+            direccion4.setCliente(cliente4);
+
+            Direccion direccion5 = new Direccion();
+            direccion5.setCalle("Av Vina del Mar");
+            direccion5.setNumero(220);
+            direccion5.setComuna("Centro");
+            direccion5.setCiudad("Vina del Mar");
+            direccion5.setReferencia("Cerca de terminal");
+            direccion5.setPrincipal(true);
+            direccion5.setFechaRegistro(LocalDate.now());
+            direccion5.setCliente(cliente5);
+
             direccionRepository.save(direccion1);
             direccionRepository.save(direccion2);
             direccionRepository.save(direccion3);
+            direccionRepository.save(direccion4);
+            direccionRepository.save(direccion5);
         }
     }
 }

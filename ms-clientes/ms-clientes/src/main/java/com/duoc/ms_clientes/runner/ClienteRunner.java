@@ -49,9 +49,29 @@ public class ClienteRunner implements CommandLineRunner {
             cliente3.setActivo(true);
             cliente3.setFechaRegistro(LocalDate.now());
 
+            Cliente cliente4 = new Cliente();
+            cliente4.setRut("77666555-4");
+            cliente4.setNombre("Ana");
+            cliente4.setApellido("Rojas");
+            cliente4.setEmail("ana.rojas@gmail.com");
+            cliente4.setTelefono(934567890);
+            cliente4.setActivo(true);
+            cliente4.setFechaRegistro(LocalDate.now());
+
+            Cliente cliente5 = new Cliente();
+            cliente5.setRut("66555444-3");
+            cliente5.setNombre("Luis");
+            cliente5.setApellido("Torres");
+            cliente5.setEmail("luis.torres@gmail.com");
+            cliente5.setTelefono(945678901);
+            cliente5.setActivo(true);
+            cliente5.setFechaRegistro(LocalDate.now());
+
             clienteRepository.save(cliente1);
             clienteRepository.save(cliente2);
             clienteRepository.save(cliente3);
+            clienteRepository.save(cliente4);
+            clienteRepository.save(cliente5);
         }
     }
 }

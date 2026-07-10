@@ -1,13 +1,11 @@
 package com.duoc.ms_reportes.assemblers;
 
-import com.duoc.ms_reportes.controller.ReporteControllerV2;
 import com.duoc.ms_reportes.dto.ReporteDTO;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 /**
  * Construye la representacion HATEOAS para las respuestas de reportes
@@ -19,9 +17,9 @@ public class ReporteModelAssembler implements RepresentationModelAssembler<Repor
     @NonNull
     public EntityModel<ReporteDTO> toModel(@NonNull ReporteDTO reporte) {
         return EntityModel.of(reporte,
-                linkTo(methodOn(ReporteControllerV2.class).findById(reporte.getId())).withSelfRel(),
-                linkTo(methodOn(ReporteControllerV2.class).findAll()).withRel("reportes"),
-                linkTo(methodOn(ReporteControllerV2.class).findByReservaId(reporte.getReservaId())).withRel("reportes-reserva"),
-                linkTo(methodOn(ReporteControllerV2.class).findByPagoConfirmado(reporte.isPagoConfirmado())).withRel("reportes-pago-confirmado"));
+                Link.of("/api/v2/reportes/" + reporte.getId()).withSelfRel(),
+                Link.of("/api/v2/reportes").withRel("reportes"),
+                Link.of("/api/v2/reportes/reserva/" + reporte.getReservaId()).withRel("reportes-reserva"),
+                Link.of("/api/v2/reportes/pago-confirmado?confirmado=" + reporte.isPagoConfirmado()).withRel("reportes-pago-confirmado"));
     }
 }

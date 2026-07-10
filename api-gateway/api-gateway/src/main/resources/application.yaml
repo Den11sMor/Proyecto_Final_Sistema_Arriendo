@@ -1,65 +1,12 @@
-server:
-  port: 8080
-
 spring:
   application:
     name: api-gateway
-  cloud:
-    gateway:
-      server:
-        webflux:
-          discovery:
-            locator:
-              enabled: false
-          routes:
-            - id: ms-clientes-route
-              uri: lb://ms-clientes
-              predicates:
-                - Path=/ms-clientes/**
-              filters:
-                - StripPrefix=1
-            - id: ms-vehiculos-route
-              uri: lb://ms-vehiculos
-              predicates:
-                - Path=/ms-vehiculos/**
-              filters:
-                - StripPrefix=1
-            - id: ms-reservas-route
-              uri: lb://ms-reservas
-              predicates:
-                - Path=/ms-reservas/**
-              filters:
-                - StripPrefix=1
-            - id: ms-pagos-route
-              uri: lb://ms-pagos
-              predicates:
-                - Path=/ms-pagos/**
-              filters:
-                - StripPrefix=1
-            - id: ms-reportes-route
-              uri: lb://ms-reportes
-              predicates:
-                - Path=/ms-reportes/**
-              filters:
-                - StripPrefix=1
-            - id: ms-sucursales-route
-              uri: lb://ms-sucursales
-              predicates:
-                - Path=/ms-sucursales/**
-              filters:
-                - StripPrefix=1
-            - id: ms-empleados-route
-              uri: lb://ms-empleados
-              predicates:
-                - Path=/ms-empleados/**
-              filters:
-                - StripPrefix=1
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-    register-with-eureka: true
-    fetch-registry: true
-  instance:
-    prefer-ip-address: true
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /doc/swagger-ui.html
