@@ -1,0 +1,68 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: false
+          routes:
+            - id: ms-clientes-route
+              uri: lb://ms-clientes
+              predicates:
+                - Path=/ms-clientes/**
+              filters:
+                - StripPrefix=1
+            - id: ms-vehiculos-route
+              uri: lb://ms-vehiculos
+              predicates:
+                - Path=/ms-vehiculos/**
+              filters:
+                - StripPrefix=1
+            - id: ms-reservas-route
+              uri: lb://ms-reservas
+              predicates:
+                - Path=/ms-reservas/**
+              filters:
+                - StripPrefix=1
+            - id: ms-pagos-route
+              uri: lb://ms-pagos
+              predicates:
+                - Path=/ms-pagos/**
+              filters:
+                - StripPrefix=1
+            - id: ms-reportes-route
+              uri: lb://ms-reportes
+              predicates:
+                - Path=/ms-reportes/**
+              filters:
+                - StripPrefix=1
+            - id: ms-sucursales-route
+              uri: lb://ms-sucursales
+              predicates:
+                - Path=/ms-sucursales/**
+              filters:
+                - StripPrefix=1
+            - id: ms-empleados-route
+              uri: lb://ms-empleados
+              predicates:
+                - Path=/ms-empleados/**
+              filters:
+                - StripPrefix=1
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    com.duoc.api_gateway: INFO
+    org.springframework.cloud.gateway: INFO
