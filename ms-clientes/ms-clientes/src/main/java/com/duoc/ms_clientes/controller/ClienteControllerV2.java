@@ -23,7 +23,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -55,17 +57,15 @@ public class ClienteControllerV2 {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<CollectionModel<EntityModel<ClienteDTO>>> findAll() {
+    public ResponseEntity<Map<String, Object>> findAll() {
         log.info("Solicitud V2 para listar clientes");
-        List<EntityModel<ClienteDTO>> clientes = clienteService.findAll()
+        List<Map<String, Object>> clientes = clienteService.findAll()
                 .stream()
                 .map(clienteModelAssembler::toModel)
+                .map(this::toResponse)
                 .toList();
 
-        return ResponseEntity.ok(CollectionModel.of(
-                clientes,
-                Link.of("/api/v2/clientes").withSelfRel()
-        ));
+        return ResponseEntity.ok(collection("clienteDTOList", clientes, "/api/v2/clientes"));
     }
 
     @GetMapping("/clientes/{id}")
@@ -88,12 +88,12 @@ public class ClienteControllerV2 {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<EntityModel<ClienteDTO>> findById(
+    public ResponseEntity<Map<String, Object>> findById(
             @Parameter(description = "ID del cliente", example = "1", required = true)
             @PathVariable Integer id) {
         log.info("Solicitud V2 para buscar cliente por id: {}", id);
         ClienteDTO cliente = clienteService.findById(id);
-        return ResponseEntity.ok(clienteModelAssembler.toModel(cliente));
+        return ResponseEntity.ok(toResponse(clienteModelAssembler.toModel(cliente)));
     }
 
     @PostMapping("/clientes")
@@ -118,13 +118,13 @@ public class ClienteControllerV2 {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<EntityModel<ClienteDTO>> save(@Valid @RequestBody ClienteRequestDTO request) {
+    public ResponseEntity<Map<String, Object>> save(@Valid @RequestBody ClienteRequestDTO request) {
         log.info("Solicitud V2 para crear cliente");
         ClienteDTO clienteCreado = clienteService.save(request);
 
         return ResponseEntity
                 .created(URI.create("/api/v2/clientes/" + clienteCreado.getId()))
-                .body(clienteModelAssembler.toModel(clienteCreado));
+                .body(toResponse(clienteModelAssembler.toModel(clienteCreado)));
     }
 
     @PutMapping("/clientes/{id}")
@@ -150,13 +150,13 @@ public class ClienteControllerV2 {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<EntityModel<ClienteDTO>> update(
+    public ResponseEntity<Map<String, Object>> update(
             @Parameter(description = "ID del cliente", example = "1", required = true)
             @PathVariable Integer id,
             @Valid @RequestBody ClienteRequestDTO request) {
         log.info("Solicitud V2 para actualizar cliente con id: {}", id);
         ClienteDTO clienteActualizado = clienteService.update(id, request);
-        return ResponseEntity.ok(clienteModelAssembler.toModel(clienteActualizado));
+        return ResponseEntity.ok(toResponse(clienteModelAssembler.toModel(clienteActualizado)));
     }
 
     @DeleteMapping("/clientes/{id}")
@@ -203,19 +203,68 @@ public class ClienteControllerV2 {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<CollectionModel<EntityModel<ClienteDTO>>> buscarPorEmail(
+    public ResponseEntity<Map<String, Object>> buscarPorEmail(
             @Parameter(description = "Texto para buscar dentro del email", example = "correo", required = true)
             @RequestParam String texto) {
         log.info("Solicitud V2 para buscar clientes por email: {}", texto);
-        List<EntityModel<ClienteDTO>> clientes = clienteService.buscarPorEmail(texto)
+        List<Map<String, Object>> clientes = clienteService.buscarPorEmail(texto)
                 .stream()
                 .map(clienteModelAssembler::toModel)
+                .map(this::toResponse)
                 .toList();
 
-        return ResponseEntity.ok(CollectionModel.of(
+        Map<String, Object> response = collection(
+                "clienteDTOList",
                 clientes,
-                Link.of("/api/v2/clientes/buscar-email?texto=" + texto).withSelfRel(),
-                Link.of("/api/v2/clientes").withRel("clientes")
-        ));
+                "/api/v2/clientes/buscar-email?texto=" + texto
+        );
+        links(response).put("clientes", link("/api/v2/clientes"));
+        return ResponseEntity.ok(response);
+    }
+
+    private Map<String, Object> toResponse(EntityModel<ClienteDTO> entityModel) {
+        ClienteDTO cliente = entityModel.getContent();
+        Map<String, Object> model = new LinkedHashMap<>();
+        if (cliente != null) {
+            model.put("id", cliente.getId());
+            model.put("rut", cliente.getRut());
+            model.put("nombre", cliente.getNombre());
+            model.put("apellido", cliente.getApellido());
+            model.put("email", cliente.getEmail());
+            model.put("telefono", cliente.getTelefono());
+            model.put("activo", cliente.getActivo());
+            model.put("fechaRegistro", cliente.getFechaRegistro());
+        }
+        Map<String, Object> links = linksFrom(entityModel);
+        model.put("_links", links);
+        return model;
+    }
+
+    private Map<String, Object> linksFrom(EntityModel<?> entityModel) {
+        Map<String, Object> links = new LinkedHashMap<>();
+        for (Link link : entityModel.getLinks()) {
+            links.put(link.getRel().value(), link(link.getHref()));
+        }
+        return links;
+    }
+
+    private Map<String, Object> collection(String name, List<Map<String, Object>> items, String selfHref) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        Map<String, Object> embedded = new LinkedHashMap<>();
+        embedded.put(name, items);
+        response.put("_embedded", embedded);
+        Map<String, Object> links = new LinkedHashMap<>();
+        links.put("self", link(selfHref));
+        response.put("_links", links);
+        return response;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> links(Map<String, Object> response) {
+        return (Map<String, Object>) response.get("_links");
+    }
+
+    private Map<String, String> link(String href) {
+        return Map.of("href", href);
     }
 }

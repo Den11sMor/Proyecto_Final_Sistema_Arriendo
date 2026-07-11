@@ -23,7 +23,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -55,17 +57,15 @@ public class DireccionControllerV2 {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<CollectionModel<EntityModel<DireccionDTO>>> findAll() {
+    public ResponseEntity<Map<String, Object>> findAll() {
         log.info("Solicitud V2 para listar direcciones");
-        List<EntityModel<DireccionDTO>> direcciones = direccionService.findAll()
+        List<Map<String, Object>> direcciones = direccionService.findAll()
                 .stream()
                 .map(direccionModelAssembler::toModel)
+                .map(this::toResponse)
                 .toList();
 
-        return ResponseEntity.ok(CollectionModel.of(
-                direcciones,
-                Link.of("/api/v2/direcciones").withSelfRel()
-        ));
+        return ResponseEntity.ok(collection("direccionDTOList", direcciones, "/api/v2/direcciones"));
     }
 
     @GetMapping("/direcciones/{id}")
@@ -88,12 +88,12 @@ public class DireccionControllerV2 {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<EntityModel<DireccionDTO>> findById(
+    public ResponseEntity<Map<String, Object>> findById(
             @Parameter(description = "ID de la direccion", example = "1", required = true)
             @PathVariable Integer id) {
         log.info("Solicitud V2 para buscar direccion por id: {}", id);
         DireccionDTO direccion = direccionService.findById(id);
-        return ResponseEntity.ok(direccionModelAssembler.toModel(direccion));
+        return ResponseEntity.ok(toResponse(direccionModelAssembler.toModel(direccion)));
     }
 
     @PostMapping("/direcciones")
@@ -119,13 +119,13 @@ public class DireccionControllerV2 {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<EntityModel<DireccionDTO>> save(@Valid @RequestBody DireccionRequestDTO request) {
+    public ResponseEntity<Map<String, Object>> save(@Valid @RequestBody DireccionRequestDTO request) {
         log.info("Solicitud V2 para crear direccion");
         DireccionDTO direccionCreada = direccionService.save(request);
 
         return ResponseEntity
                 .created(URI.create("/api/v2/direcciones/" + direccionCreada.getId()))
-                .body(direccionModelAssembler.toModel(direccionCreada));
+                .body(toResponse(direccionModelAssembler.toModel(direccionCreada)));
     }
 
     @PutMapping("/direcciones/{id}")
@@ -151,13 +151,13 @@ public class DireccionControllerV2 {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    public ResponseEntity<EntityModel<DireccionDTO>> update(
+    public ResponseEntity<Map<String, Object>> update(
             @Parameter(description = "ID de la direccion", example = "1", required = true)
             @PathVariable Integer id,
             @Valid @RequestBody DireccionRequestDTO request) {
         log.info("Solicitud V2 para actualizar direccion con id: {}", id);
         DireccionDTO direccionActualizada = direccionService.update(id, request);
-        return ResponseEntity.ok(direccionModelAssembler.toModel(direccionActualizada));
+        return ResponseEntity.ok(toResponse(direccionModelAssembler.toModel(direccionActualizada)));
     }
 
     @DeleteMapping("/direcciones/{id}")
@@ -184,5 +184,45 @@ public class DireccionControllerV2 {
         log.info("Solicitud V2 para eliminar direccion con id: {}", id);
         direccionService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private Map<String, Object> toResponse(EntityModel<DireccionDTO> entityModel) {
+        DireccionDTO direccion = entityModel.getContent();
+        Map<String, Object> model = new LinkedHashMap<>();
+        if (direccion != null) {
+            model.put("id", direccion.getId());
+            model.put("calle", direccion.getCalle());
+            model.put("numero", direccion.getNumero());
+            model.put("comuna", direccion.getComuna());
+            model.put("ciudad", direccion.getCiudad());
+            model.put("referencia", direccion.getReferencia());
+            model.put("principal", direccion.getPrincipal());
+            model.put("fechaRegistro", direccion.getFechaRegistro());
+            model.put("clienteId", direccion.getClienteId());
+        }
+        Map<String, Object> links = linksFrom(entityModel);
+        model.put("_links", links);
+        return model;
+    }
+
+    private Map<String, Object> linksFrom(EntityModel<?> entityModel) {
+        Map<String, Object> links = new LinkedHashMap<>();
+        for (Link link : entityModel.getLinks()) {
+            links.put(link.getRel().value(), link(link.getHref()));
+        }
+        return links;
+    }
+
+    private Map<String, Object> collection(String name, List<Map<String, Object>> items, String selfHref) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        Map<String, Object> embedded = new LinkedHashMap<>();
+        embedded.put(name, items);
+        response.put("_embedded", embedded);
+        response.put("_links", Map.of("self", link(selfHref)));
+        return response;
+    }
+
+    private Map<String, String> link(String href) {
+        return Map.of("href", href);
     }
 }
